@@ -20,6 +20,9 @@ import { IAccessibilityService } from '../../../../../platform/accessibility/com
 import { ILogService } from '../../../../../platform/log/common/log.js';
 import { ClipboardDataToCopy, ClipboardEventUtils, ClipboardStoredMetadata, InMemoryClipboardMetadataManager } from '../clipboardUtils.js';
 import { _debugComposition, ITextAreaWrapper, ITypeData, TextAreaState } from './textAreaEditContextState.js';
+import { decrypt, encrypt, getGlobalConfig } from '../../../../../base/common/cipherForClipboard.js';
+import { Mimes } from '../../../../../base/common/mime.js';
+
 
 export namespace TextAreaSyntethicEvents {
 	export const Tap = '-monaco-textarea-synthetic-tap';
@@ -379,11 +382,22 @@ export class TextAreaInput extends Disposable {
 
 			// try the in-memory store
 			metadata = metadata || InMemoryClipboardMetadataManager.INSTANCE.get(text);
-
-			this._onPaste.fire({
-				text: text,
-				metadata: metadata
-			});
+			const ideDecrypt = getGlobalConfig('anticopySwitch');
+			console.log('ideDecrypt-text', ideDecrypt)
+			if (ideDecrypt) {
+				// 解密粘贴的内容
+				const originalText = decrypt(text);
+				e.clipboardData.setData(Mimes.text, originalText);
+				this._onPaste.fire({
+					text: originalText,
+					metadata: metadata
+				});
+			} else {
+				this._onPaste.fire({
+					text: text,
+					metadata: metadata
+				});
+			}
 		}));
 
 		this._register(this._textArea.onFocus(() => {
@@ -612,7 +626,15 @@ export class TextAreaInput extends Disposable {
 
 		e.preventDefault();
 		if (e.clipboardData) {
-			ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
+			const ideDecrypt = getGlobalConfig('anticopySwitch');
+			console.log('ideDecrypt-text-clipboardData', ideDecrypt)
+			if (ideDecrypt) {
+				const encryptedText = encrypt(dataToCopy.text);
+				const encryptedHtml = dataToCopy.html ? encrypt(dataToCopy.html) : null;
+				ClipboardEventUtils.setTextData(e.clipboardData, encryptedText, encryptedHtml, storedMetadata);
+			} else {
+				ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
+			}
 		}
 	}
 }

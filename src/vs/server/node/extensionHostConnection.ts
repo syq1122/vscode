@@ -22,7 +22,7 @@ import { getNLSConfiguration } from './remoteLanguagePacks.js';
 import { IServerEnvironmentService } from './serverEnvironmentService.js';
 import { IPCExtHostConnection, SocketExtHostConnection, writeExtHostConnection } from '../../workbench/services/extensions/common/extensionHostEnv.js';
 import { IExtHostReadyMessage, IExtHostReduceGraceTimeMessage, IExtHostSocketMessage } from '../../workbench/services/extensions/common/extensionHostProtocol.js';
-import { IProductService } from '../../../vs/platform/product/common/productService.js';
+import { IProductService } from '../../platform/product/common/productService.js';
 
 export async function buildUserEnvironment(startParamsEnv: { [key: string]: string | null } = {}, withUserShellEnvironment: boolean, language: string, environmentService: IServerEnvironmentService, logService: ILogService, configurationService: IConfigurationService): Promise<IProcessEnvironment> {
 	const nlsConfig = await getNLSConfiguration(language, environmentService.userDataPath);

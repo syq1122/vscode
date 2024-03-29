@@ -95,6 +95,8 @@ import { ISecretStorageService } from '../../platform/secrets/common/secrets.js'
 import { TunnelSource } from '../services/remote/common/tunnelModel.js';
 import { mainWindow } from '../../base/browser/window.js';
 import { INotificationService, Severity } from '../../platform/notification/common/notification.js';
+import { setGlobalConfig } from '../../base/common/cipherForClipboard.js';
+import { isWeb } from '../../base/common/platform.js';
 
 export class BrowserMain extends Disposable {
 
@@ -151,6 +153,7 @@ export class BrowserMain extends Disposable {
 			const embedderTerminalService = accessor.get(IEmbedderTerminalService);
 			const remoteAuthorityResolverService = accessor.get(IRemoteAuthorityResolverService);
 			const notificationService = accessor.get(INotificationService);
+			const secretStorage = accessor.get(ISecretStorageService);
 
 			async function showMessage<T extends string>(severity: Severity, message: string, ...items: T[]): Promise<T | undefined> {
 				const choice = new DeferredPromise<T | undefined>();
@@ -168,7 +171,9 @@ export class BrowserMain extends Disposable {
 			}
 
 			let logger: DelayedLogChannel | undefined = undefined;
-
+			console.log('[CloudIDE] invokeFunction');
+			// 请求用户信息
+			this.getUserInfo(secretStorage);
 			return {
 				commands: {
 					executeCommand: (command, ...args) => commandService.executeCommand(command, ...args)
@@ -242,6 +247,56 @@ export class BrowserMain extends Disposable {
 				shutdown: () => lifecycleService.shutdown()
 			} satisfies IWorkbench;
 		});
+	}
+	private async getUtoken(secretStorage: ISecretStorageService) {
+		if (isWeb) {
+			const cookies = (document.cookie ?? '').split(';');
+			const xtoken = cookies.find(v => v.toLocaleLowerCase().trim().startsWith('x-token'));
+			const [, token] = xtoken?.split('=') ?? [];
+			if (!token) {
+				return new URLSearchParams(window.location.search).get('ticket');
+			}
+			return token;
+		}
+		const token = await secretStorage.get(JSON.stringify({ extensionId: 'cloud.cloud-ide-remote', key: 'utoken' }));
+		return token;
+	}
+	private getRouterRouteIds() {
+		const [, , , CompanyId, ProjectId] = window.location.pathname.match(/^\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\//) || [];
+		return [CompanyId, ProjectId];
+	}
+	private async getUserInfo(secretStorage: ISecretStorageService) {
+		const host = window.location.origin;
+		const utoken = await this.getUtoken(secretStorage);
+		if (!utoken) {
+			console.error('未能获取有效登录凭证！');
+			return undefined;
+		}
+		console.log('host', host)
+		const endpoint = `${host}/api/cloudide/${this.getRouterRouteIds()[0]}/${this.getRouterRouteIds()[1]}/cloud/user/info`;
+		try {
+			const response = await fetch(
+				endpoint,
+				{
+					method: 'GET',
+					// @ts-ignore
+					headers: { 'X-TOKEN': utoken },
+				});
+			if (!response.ok) {
+				return;
+			}
+			const data = await response.json();
+			if (data.code !== 0) {
+				console.error(data.message ?? 'get user info failed');
+				return;
+			}
+			setGlobalConfig('anticopySwitch', data.result.anticopySwitch === 0 ? true : false);
+		}
+		catch (error) {
+			console.error('Failed to fetch user info:', error.message);
+			setGlobalConfig('anticopySwitch', false);
+			return undefined;
+		}
 	}
 
 	private registerListeners(workbench: Workbench): void {

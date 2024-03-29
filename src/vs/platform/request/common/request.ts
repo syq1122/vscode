@@ -209,7 +209,7 @@ function registerProxyConfigurations(useHostProxy = true, useHostProxyDefault = 
 				},
 				'http.proxyStrictSSL': {
 					type: 'boolean',
-					default: true,
+					default: false,
 					markdownDescription: localize('strictSSL', "Controls whether the proxy server certificate should be verified against the list of supplied CAs. When during [remote development](https://aka.ms/vscode-remote) the {0} setting is disabled this setting can be configured in the local and the remote settings separately.", '`#http.useLocalProxyConfiguration#`'),
 					restricted: true
 				},

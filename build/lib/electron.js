@@ -230,7 +230,10 @@ function getElectron(arch) {
             platform: process.platform,
             arch: arch === 'armhf' ? 'arm' : arch,
             ffmpegChromium: false,
-            keepDefaultApp: true
+            keepDefaultApp: true,
+			download: {
+				mirror: 'https://npmmirror.com/mirrors/electron/'
+			}
         };
         return vinyl_fs_1.default.src('package.json')
             .pipe(json({ name: product.nameShort }))

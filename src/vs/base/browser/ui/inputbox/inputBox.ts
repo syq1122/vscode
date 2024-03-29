@@ -23,6 +23,8 @@ import { ScrollbarVisibility } from '../../../common/scrollable.js';
 import './inputBox.css';
 import * as nls from '../../../../nls.js';
 import { MutableDisposable, type IDisposable } from '../../../common/lifecycle.js';
+import { Mimes } from '../../../common/mime.js';
+import { decrypt, encrypt, getGlobalConfig } from '../../../common/cipherForClipboard.js';
 
 
 const $ = dom.$;
@@ -212,6 +214,33 @@ export class InputBox extends Widget {
 		}
 
 		this.applyStyles();
+		// 监听 input box 上面的 copy 和 paste 事件，加解密-todo: 判断是否开启加密
+		const encryptCopiedText = (e: ClipboardEvent, action: 'copy' | 'cut') => {
+			// eslint-disable-next-line no-restricted-globals
+			const textToCopy = window.getSelection()?.toString();
+			if (textToCopy) {
+				e.preventDefault();
+				const encrypted = encrypt(textToCopy);
+				e.clipboardData?.setData(Mimes.text, encrypted);
+				if (action === 'cut') {
+					this.removeSelection();
+				}
+			}
+		};
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		if (ideDecrypt) {
+			this.input.addEventListener('copy', e => encryptCopiedText(e, 'copy'));
+			this.input.addEventListener('cut', e => encryptCopiedText(e, 'cut'));
+			this.input.addEventListener('paste', async (e: ClipboardEvent) => {
+				const cipherText = e.clipboardData?.getData(Mimes.text);
+				if (cipherText) {
+					e.preventDefault();
+					const originalText = decrypt(cipherText);
+					e.clipboardData?.setData(Mimes.text, originalText);
+					this.insertAtCursor(originalText);
+				}
+			});
+		}
 	}
 
 	protected onBlur(): void {
@@ -608,7 +637,25 @@ export class InputBox extends Widget {
 
 		if (start !== null && end !== null) {
 			this.value = content.substr(0, start) + text + content.substr(end);
-			inputElement.setSelectionRange(start + 1, start + 1);
+			// todo: 判断是否加密
+			const ideDecrypt = getGlobalConfig('anticopySwitch');
+			if (ideDecrypt) {
+				inputElement.setSelectionRange(start + text.length, start + text.length);
+			} else {
+				inputElement.setSelectionRange(start + 1, start + 1);
+			}
+			this.layout();
+		}
+	}
+	public removeSelection(): void {
+		const inputElement = this.inputElement;
+		const start = inputElement.selectionStart;
+		const end = inputElement.selectionEnd;
+		const content = inputElement.value;
+
+		if (start !== null && end !== null) {
+			this.value = content.slice(0, start) + content.slice(end);
+			inputElement.setSelectionRange(start, start);
 			this.layout();
 		}
 	}

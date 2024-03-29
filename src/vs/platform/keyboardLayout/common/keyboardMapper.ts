@@ -5,6 +5,7 @@
 
 import { ResolvedKeybinding, Keybinding } from '../../../base/common/keybindings.js';
 import { IKeyboardEvent } from '../../keybinding/common/keybinding.js';
+// import { requestLog } from '../../../base/common/sendLog.js';
 
 export interface IKeyboardMapper {
 	dumpDebugInfo(): string;
@@ -16,6 +17,7 @@ export class CachedKeyboardMapper implements IKeyboardMapper {
 
 	private _actual: IKeyboardMapper;
 	private _cache: Map<string, ResolvedKeybinding[]>;
+	// private canSendRequest: Boolean = true;
 
 	constructor(actual: IKeyboardMapper) {
 		this._actual = actual;
@@ -27,6 +29,14 @@ export class CachedKeyboardMapper implements IKeyboardMapper {
 	}
 
 	public resolveKeyboardEvent(keyboardEvent: IKeyboardEvent): ResolvedKeybinding {
+		// if (this.canSendRequest) {
+		// 	this.canSendRequest = false;
+		// 	// 编辑文件后发送请求
+		// 	requestLog({ name: 'vscode.edit.file' });
+		// 	setTimeout(() => {
+		// 		this.canSendRequest = true;
+		// 	}, 1000 * 60 * 2);
+		// }
 		return this._actual.resolveKeyboardEvent(keyboardEvent);
 	}
 

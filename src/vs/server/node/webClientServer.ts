@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as http from 'http';
 import * as url from 'url';
 import * as cookie from 'cookie';
-import * as crypto from 'crypto';
+// import * as crypto from 'crypto';
 import { isEqualOrParent } from '../../base/common/extpath.js';
 import { getMediaMime } from '../../base/common/mime.js';
 import { isLinux } from '../../base/common/platform.js';
@@ -379,9 +379,10 @@ export class WebClientServer {
 		const values: { [key: string]: string } = {
 			WORKBENCH_WEB_CONFIGURATION: asJSON(workbenchWebConfiguration),
 			WORKBENCH_AUTH_SESSION: authSessionInfo ? asJSON(authSessionInfo) : '',
-			WORKBENCH_WEB_BASE_URL: staticRoute,
+			WORKBENCH_WEB_BASE_URL: staticRoute.replace(/^\//, ''),
 			WORKBENCH_NLS_URL,
-			WORKBENCH_NLS_FALLBACK_URL: `${staticRoute}/out/nls.messages.js`
+			WORKBENCH_NLS_FALLBACK_URL: `${staticRoute.replace(/^\//, '')}/out/nls.messages.js`,
+			WORKBENCH_SERVER_HOST: process.env.WORKBENCH_SERVER_HOST ?? '',
 		};
 
 		// DEV ---------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@ import { isMacintosh } from '../../../../base/common/platform.js';
 import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 import { INativeHostService } from '../../../../platform/native/common/native.js';
 import { VSBuffer } from '../../../../base/common/buffer.js';
+import { encrypt, decrypt, getGlobalConfig } from '../../../../base/common/cipherForClipboard.js';
 
 export class NativeClipboardService implements IClipboardService {
 
@@ -25,10 +26,21 @@ export class NativeClipboardService implements IClipboardService {
 	}
 
 	async writeText(text: string, type?: 'selection' | 'clipboard'): Promise<void> {
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		if (ideDecrypt) {
+			const encrypted = encrypt(text);
+			return this.nativeHostService.writeClipboardText(encrypted, type);
+		}
 		return this.nativeHostService.writeClipboardText(text, type);
 	}
 
 	async readText(type?: 'selection' | 'clipboard'): Promise<string> {
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		if (ideDecrypt) {
+			const cipherText = await this.nativeHostService.readClipboardText(type);
+			const originalText = decrypt(cipherText);
+			return originalText;
+		}
 		return this.nativeHostService.readClipboardText(type);
 	}
 

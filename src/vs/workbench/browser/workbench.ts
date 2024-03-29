@@ -49,6 +49,7 @@ import { setProgressAcccessibilitySignalScheduler } from '../../base/browser/ui/
 import { AccessibleViewRegistry } from '../../platform/accessibility/browser/accessibleViewRegistry.js';
 import { NotificationAccessibleView } from './parts/notifications/notificationAccessibleView.js';
 
+import { ISecretStorageService } from '../../platform/secrets/common/secrets.js';
 export interface IWorkbenchOptions {
 
 	/**
@@ -141,7 +142,7 @@ export class Workbench extends Layout {
 
 				// Layout
 				this.initLayout(accessor);
-
+				const secretStorage = accessor.get(ISecretStorageService);
 				// Registries
 				Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).start(accessor);
 				Registry.as<IEditorFactoryRegistry>(EditorExtensions.EditorFactory).start(accessor);
@@ -154,6 +155,8 @@ export class Workbench extends Layout {
 
 				// Render Workbench
 				this.renderWorkbench(instantiationService, notificationService, storageService, configurationService);
+				// 渲染水印
+				this.renderWatermark(secretStorage);
 
 				// Workbench Layout
 				this.createWorkbenchLayout();
@@ -349,6 +352,122 @@ export class Workbench extends Layout {
 
 		// Add Workbench to DOM
 		this.parent.appendChild(this.mainContainer);
+	}
+	private async getUtoken(secretStorage: ISecretStorageService) {
+		if (isWeb) {
+			const cookies = (document.cookie ?? '').split(';');
+			const xtoken = cookies.find(v => v.toLocaleLowerCase().trim().startsWith('x-token'));
+			const [, token] = xtoken?.split('=') ?? [];
+			if (!token) {
+				return new URLSearchParams(window.location.search).get('ticket');
+			}
+			return token;
+		}
+		const token = await secretStorage.get(JSON.stringify({ extensionId: 'cloud.cloud-ide-remote', key: 'utoken' }));
+		return token;
+	}
+
+	private async getApiHost(secretStorage: ISecretStorageService) {
+		if (isWeb) {
+			return window.localStorage.getItem('workbenchServerHost');
+		}
+		// 插件id：插件json中：publisher.name -> cloud.cloud-ide-remote
+		const host = await secretStorage.get(JSON.stringify({ extensionId: 'cloud.cloud-ide-remote', key: 'workbenchServerHost' }));
+
+		return host;
+	}
+
+	private async getUsername(secretStorage: ISecretStorageService) {
+		const host = await this.getApiHost(secretStorage);
+		if (!host) {
+			console.error('用户信息请求地址获取失败！');
+			return undefined;
+		}
+		const utoken = await this.getUtoken(secretStorage);
+		if (!utoken) {
+			console.error('未能获取有效登录凭证！');
+			return undefined;
+		}
+		console.log('host', host, utoken)
+		const endpoint = `${host}/api/cloud/user/info`;
+		try {
+			const response = await fetch(
+				endpoint,
+				{
+					method: 'GET',
+					// @ts-ignore
+					headers: { 'X-TOKEN': utoken },
+				});
+			if (!response.ok) {
+				return;
+			}
+			const data = await response.json();
+			if (data.code !== 0) {
+				console.error(data.message ?? 'get user info failed');
+				return;
+			}
+			return data.result.name;
+		}
+		catch (error) {
+			console.error('Failed to fetch user info:', error.message);
+			return undefined;
+		}
+	}
+
+	private async renderWatermark(secretStorage: ISecretStorageService) {
+		const username = await this.getUsername(secretStorage);
+
+		function createWaterMarks() {
+			if (!username) {
+				return;
+			}
+
+			const canvasElement = document.createElement('canvas');
+			const context = canvasElement.getContext('2d');
+			canvasElement.width = 260;
+			canvasElement.height = 180;
+			if (!context) {
+				return;
+			}
+			context.rotate((-45 * Math.PI) / 180);
+			context.font = '400 26px Arial';
+			context.fillStyle = 'rgba(128, 128, 128, 0.3)';
+			context.textAlign = 'center';
+			context.textBaseline = 'middle';
+			context.fillText(username, 20, 150);
+			const watermark = canvasElement.toDataURL('image/png');
+
+			const watermarkContainer = document.createElement('div');
+			watermarkContainer.className = 'watermark-container';
+			watermarkContainer.style.position = 'absolute';
+			watermarkContainer.style.zIndex = '9999';
+			watermarkContainer.style.opacity = '0.5';
+			watermarkContainer.style.width = '100%';
+			watermarkContainer.style.height = '100%';
+			watermarkContainer.style.pointerEvents = 'none';
+			watermarkContainer.style.backgroundRepeat = 'repeat';
+			watermarkContainer.style.backgroundImage = `url(${watermark})`;
+			if (document.body.firstChild) {
+				document.body.insertBefore(watermarkContainer, document.body.firstChild);
+			}
+			else {
+				document.body.appendChild(watermarkContainer);
+			}
+		}
+
+		createWaterMarks();
+
+		const observer = new MutationObserver(mutations => {
+			mutations.forEach(mutation => {
+				if (mutation.type === 'childList') {
+					const target = document.body.getElementsByClassName('watermark-container');
+					if (target.length === 0) {
+						createWaterMarks();
+					}
+				}
+			});
+		});
+		observer.observe(document.body, { childList: true });
 	}
 
 	private createPart(id: string, role: string, classes: string[]): HTMLElement {

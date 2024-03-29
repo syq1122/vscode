@@ -236,7 +236,7 @@ export function fromMarketplace(serviceUrl: string, { name: extensionName, versi
 	// const url = `${serviceUrl}/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
 	const url = (() => {
 		switch (publisher) {
-			case 'baidu':
+			case 'cloudide':
 				return `https://baidu-ide.bj.bcebos.com/codelab/builtin-extensions/${name}-${version}.vsix`;
 			default:
 				// 这里直接写死了 vscode marketplace 的 service url

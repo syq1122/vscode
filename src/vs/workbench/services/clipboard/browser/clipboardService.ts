@@ -15,6 +15,7 @@ import { IWorkbenchEnvironmentService } from '../../environment/common/environme
 import { ILogService } from '../../../../platform/log/common/log.js';
 import { ILayoutService } from '../../../../platform/layout/browser/layoutService.js';
 import { getActiveWindow } from '../../../../base/browser/dom.js';
+import { encrypt, decrypt, getGlobalConfig } from '../../../../base/common/cipherForClipboard.js';
 
 export class BrowserClipboardService extends BaseBrowserClipboardService {
 
@@ -29,23 +30,38 @@ export class BrowserClipboardService extends BaseBrowserClipboardService {
 	}
 
 	override async writeText(text: string, type?: string): Promise<void> {
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
 		if (!!this.environmentService.extensionTestsLocationURI && typeof type !== 'string') {
 			type = 'vscode-tests'; // force in-memory clipboard for tests to avoid permission issues
 		}
-
+		if (ideDecrypt) {
+			const encrypted = encrypt(text);
+			return super.writeText(encrypted, type);
+		}
 		return super.writeText(text, type);
 	}
 
 	override async readText(type?: string): Promise<string> {
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
 		if (!!this.environmentService.extensionTestsLocationURI && typeof type !== 'string') {
 			type = 'vscode-tests'; // force in-memory clipboard for tests to avoid permission issues
 		}
 
 		if (type) {
+			if (ideDecrypt) {
+				const cipherText = await super.readText(type);
+				const originalText = decrypt(cipherText);
+				return originalText;
+			}
 			return super.readText(type);
 		}
 
 		try {
+			if (ideDecrypt) {
+				const cipherText = await navigator.clipboard.readText();
+				const originalText = decrypt(cipherText);
+				return originalText;
+			}
 			return await getActiveWindow().navigator.clipboard.readText();
 		} catch (error) {
 			return new Promise<string>(resolve => {

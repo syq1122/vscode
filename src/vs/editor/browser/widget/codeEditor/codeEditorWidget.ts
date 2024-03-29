@@ -60,6 +60,7 @@ import { INotificationService, Severity } from '../../../../platform/notificatio
 import { editorErrorForeground, editorHintForeground, editorInfoForeground, editorWarningForeground } from '../../../../platform/theme/common/colorRegistry.js';
 import { IThemeService, registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
+import { decrypt, getGlobalConfig } from '../../../../base/common/cipherForClipboard.js';
 
 export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeEditor {
 
@@ -1161,9 +1162,19 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		if (!this._modelData) {
 			return;
 		}
+		console.log('[CloudIDE] ideDecrypt-_paste', text);
 		const viewModel = this._modelData.viewModel;
 		const startPosition = viewModel.getSelection().getStartPosition();
-		viewModel.paste(text, pasteOnNewLine, multicursorText, source);
+
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		if (ideDecrypt) {
+			// 解密粘贴的内容
+			const originalText = decrypt(text);
+			viewModel.paste(originalText, pasteOnNewLine, multicursorText, source);
+		} else {
+			viewModel.paste(text, pasteOnNewLine, multicursorText, source);
+		}
+
 		const endPosition = viewModel.getSelection().getStartPosition();
 		if (source === 'keyboard') {
 			this._onDidPaste.fire({

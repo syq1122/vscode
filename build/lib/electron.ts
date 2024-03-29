@@ -213,7 +213,10 @@ function getElectron(arch: string): () => NodeJS.ReadWriteStream {
 			platform: process.platform,
 			arch: arch === 'armhf' ? 'arm' : arch,
 			ffmpegChromium: false,
-			keepDefaultApp: true
+			keepDefaultApp: true,
+			download: {
+				mirror: 'https://npmmirror.com/mirrors/electron/'
+			}
 		};
 
 		return vfs.src('package.json')

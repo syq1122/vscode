@@ -73,6 +73,8 @@ function getExtensionDownloadStream(extension: IExtensionDefinition) {
 
 	if (extension.vsix) {
 		input = ext.fromVsix(path.join(root, extension.vsix), extension);
+	} else if (extension.repo) {
+		input = ext.fromGithub(extension);
 	} else if (productjson.extensionsGallery?.serviceUrl) {
 		input = ext.fromMarketplace(productjson.extensionsGallery.serviceUrl, extension);
 	} else {

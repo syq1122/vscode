@@ -8,6 +8,7 @@ import * as platform from './platform.js';
 import { equalsIgnoreCase, startsWithIgnoreCase } from './strings.js';
 import { URI } from './uri.js';
 import * as paths from './path.js';
+import { isWeb } from './platform.js';
 
 export namespace Schemas {
 
@@ -173,7 +174,13 @@ class RemoteAuthoritiesImpl {
 	}
 
 	setServerRootPath(product: { quality?: string; commit?: string }, serverBasePath: string | undefined): void {
-		this._serverRootPath = paths.posix.join(serverBasePath ?? '/', getServerProductSegment(product));
+		console.log("setServerRootPath--------------: " + serverBasePath)
+		let pathname = serverBasePath;
+		if (isWeb) {
+			pathname = window.location.pathname + serverBasePath?.replace(/^\//, '');
+		}
+		this._serverRootPath = paths.posix.join(pathname ?? '/', getServerProductSegment(product));
+		console.log("setServerRootPath this._serverRootPath--------------: " + this._serverRootPath)
 	}
 
 	getServerRootPath(): string {
@@ -229,6 +236,7 @@ class RemoteAuthoritiesImpl {
 export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 
 export function getServerProductSegment(product: { quality?: string; commit?: string }) {
+	console.log("getServerProductSegment --------------: ")
 	return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
 }
 

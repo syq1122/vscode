@@ -295,8 +295,10 @@ function connectToRenderer(protocol: IMessagePassingProtocol): Promise<IRenderer
 			const myCommit = product.commit;
 
 			if (rendererCommit && myCommit) {
+				const rendererCommitMajor = rendererCommit.replace(/\.\d+$/, '');
+				const myCommitMajor = myCommit.replace(/\.\d+$/, '');
 				// Running in the built version where commits are defined
-				if (rendererCommit !== myCommit) {
+				if (rendererCommitMajor !== myCommitMajor) {
 					nativeExit(ExtensionHostExitCode.VersionMismatch);
 				}
 			}

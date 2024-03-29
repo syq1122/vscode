@@ -37,6 +37,7 @@ import { WebviewThemeDataProvider } from './themeing.js';
 import { areWebviewContentOptionsEqual, IWebview, WebviewContentOptions, WebviewExtensionDescription, WebviewInitInfo, WebviewMessageReceivedEvent, WebviewOptions } from './webview.js';
 import { WebviewFindDelegate, WebviewFindWidget } from './webviewFindWidget.js';
 import { FromWebviewMessage, KeyEvent, ToWebviewMessage, WebViewDragEvent } from './webviewMessages.js';
+import { isWeb } from '../../../../base/common/platform.js';
 
 interface WebviewContent {
 	readonly html: string;
@@ -444,8 +445,7 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
 		const queryString = new URLSearchParams(params).toString();
 
 		// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1754872
-		const fileName = isFirefox ? 'index-no-csp.html' : 'index.html';
-
+		const fileName = isWeb ? 'index-no-csp.html' : (isFirefox ? 'index-no-csp.html' : 'index.html');
 		this.element!.setAttribute('src', `${this.webviewContentEndpoint(encodedWebviewOrigin)}/${fileName}?${queryString}`);
 	}
 

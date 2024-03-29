@@ -40,10 +40,10 @@ function set_up_global_variables() {
 
 function find_target_node_version() {
 	echo "==> Finding target node version..."
-	local getNodeVersionJsCode="const fs = require('fs');
-	const yarnrc = fs.readFileSync('$SOURCE/remote/.yarnrc', 'utf8');
-	const target = /^target \"(.*)\"$/m.exec(yarnrc)[1];
-	console.log(target);"
+	local getNodeVersionJsCode="const fs = require('fs');"
+#	const yarnrc = fs.readFileSync('$SOURCE/remote/.yarnrc', 'utf8');
+#	const target = /^target \"(.*)\"$/m.exec(yarnrc)[1];
+#	console.log(target);"
 
 	NODE_VERSION=$(node -e "$getNodeVersionJsCode")
 	echo "==> Server Node.js Version: $NODE_VERSION"
@@ -60,17 +60,17 @@ function download_vsserver_release() {
 function prepare_deps() {
 	echo "==> Preparing dependencies..."
 	$cmd cd $SOURCE
-	$cmd yarn --ignore-scripts
+	$cmd npm install --ignore-scripts
 	$cmd cd $SOURCE/build
-	$cmd yarn
+	$cmd npm install
 	$cmd cd $SOURCE/build/lib/watch
-	$cmd yarn
+	$cmd npm install
 }
 
 function prepare_remote_web_node_modules() {
 	echo "==> Preparing remote web node_modules..."
 	$cmd cd $SOURCE/remote/web
-	$cmd yarn
+	$cmd npm install
 }
 
 function change_product_dot_json() {
@@ -83,16 +83,17 @@ function change_product_dot_json() {
 function download_builtin_extensions() {
 	echo "==> Downloading builtin extensions..."
 	$cmd cd $SOURCE
-	$cmd rm -rf .build
-	$cmd yarn download-builtin-extensions
+# TODO 这里跳过下载插件
+#	$cmd rm -rf .build
+#	$cmd npm run download-builtin-extensions
 }
 
 function compile_build_minify() {
 	echo "==> Start the compilation process"
 	$cmd cd $SOURCE
 
-	$cmd yarn gulp compile-build
-	$cmd yarn gulp minify-vscode-reh-web
+	$cmd npm run gulp compile-build
+	$cmd npm run gulp minify-vscode-reh-web
 	# 干掉 sourcemap
 	$cmd find out-vscode-reh-web-min -type f -name '*.map' | $cmd xargs rm
 }
@@ -131,7 +132,8 @@ function make_package() {
 	$cmd mkdir resources
 	$cmd cp -r $SOURCE/resources/server resources
 	$cmd rm -rf resources/server/bin resources/server/bin-dev
-
+	# 防拷贝功能让网页端(remote-web)依赖了crypto-js，所以要在官方node_modules包里额外加上crypto-js
+	$cmd cp -r $SOURCE/remote/web/node_modules/crypto-js node_modules
 	$cmd cd $WORKSPACE
 	## package
 	$cmd rm -rf ${COMMIT}-${variant}/

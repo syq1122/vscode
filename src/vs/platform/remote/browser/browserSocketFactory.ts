@@ -12,6 +12,7 @@ import { ISocket, SocketCloseEvent, SocketCloseEventType, SocketDiagnostics, Soc
 import { ISocketFactory } from '../common/remoteSocketFactoryService.js';
 import { RemoteAuthorityResolverError, RemoteAuthorityResolverErrorCode, RemoteConnectionType, WebSocketRemoteConnection } from '../common/remoteAuthorityResolver.js';
 import { mainWindow } from '../../../base/browser/window.js';
+import { isWeb } from '../../../base/common/platform.js';
 
 export interface IWebSocketFactory {
 	create(url: string, debugLabel: string): IWebSocket;
@@ -281,7 +282,8 @@ export class BrowserSocketFactory implements ISocketFactory<RemoteConnectionType
 	connect({ host, port }: WebSocketRemoteConnection, path: string, query: string, debugLabel: string): Promise<ISocket> {
 		return new Promise<ISocket>((resolve, reject) => {
 			const webSocketSchema = (/^https:/.test(mainWindow.location.href) ? 'wss' : 'ws');
-			const socket = this._webSocketFactory.create(`${webSocketSchema}://${(/:/.test(host) && !/\[/.test(host)) ? `[${host}]` : host}:${port}${path}?${query}&skipWebSocketFrames=false`, debugLabel);
+			const pathname = isWeb ? (mainWindow?.location?.pathname + path.replace(/^\//, '')) : path;
+			const socket = this._webSocketFactory.create(`${webSocketSchema}://${(/:/.test(host) && !/\[/.test(host)) ? `[${host}]` : host}:${port}${pathname}?${query}&skipWebSocketFrames=false`, debugLabel);
 			const errorListener = socket.onError(reject);
 			socket.onOpen(() => {
 				errorListener.dispose();

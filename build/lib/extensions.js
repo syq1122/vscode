@@ -249,7 +249,8 @@ const baseHeaders = {
 function fromMarketplace(serviceUrl, { name: extensionName, version, sha256, metadata }) {
     const json = require('gulp-json-editor');
     const [publisher, name] = extensionName.split('.');
-    const url = `${serviceUrl}/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
+    // const url = `${serviceUrl}/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
+    const url = `https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
     (0, fancy_log_1.default)('Downloading extension:', ansi_colors_1.default.yellow(`${extensionName}@${version}`), '...');
     const packageJsonFilter = (0, gulp_filter_1.default)('package.json', { restore: true });
     return (0, fetch_1.fetchUrls)('', {
