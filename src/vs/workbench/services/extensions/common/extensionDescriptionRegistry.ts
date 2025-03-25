@@ -70,6 +70,9 @@ export class ExtensionDescriptionRegistry implements IReadOnlyExtensionDescripti
 		this._activationMap = new Map<string, IExtensionDescription[]>();
 
 		for (const extensionDescription of this._extensionDescriptions) {
+			if (!ExtensionIdentifier.toKey(extensionDescription.identifier)) {
+				continue;
+			}
 			if (this._extensionsMap.has(extensionDescription.identifier)) {
 				// No overwriting allowed!
 				console.error('Extension `' + extensionDescription.identifier.value + '` is already registered');

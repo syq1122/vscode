@@ -13,7 +13,8 @@ import { memoize } from '../../base/common/decorators.js';
 import { URI } from '../../base/common/uri.js';
 
 export const serverOptions: OptionDescriptions<Required<ServerParsedArgs>> = {
-
+	/* ----- icoding specific arguments ----- */
+	'icoding-remote-username': { type: 'string' },
 	/* ----- server setup ----- */
 
 	'host': { type: 'string', cat: 'o', args: 'ip-address', description: nls.localize('host', "The host name or IP address the server should listen to. If not set, defaults to 'localhost'.") },
@@ -216,6 +217,8 @@ export interface ServerParsedArgs {
 	compatibility: string;
 
 	_: string[];
+	/* ----- icoding specific arguments  ----- */
+	'icoding-remote-username'?: string;
 }
 
 export const IServerEnvironmentService = refineServiceDecorator<IEnvironmentService, IServerEnvironmentService>(IEnvironmentService);

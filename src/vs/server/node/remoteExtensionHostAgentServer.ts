@@ -128,6 +128,9 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
 		if (pathname.startsWith(this._serverProductPath) && pathname.charCodeAt(this._serverProductPath.length) === CharCode.Slash) {
 			pathname = pathname.substring(this._serverProductPath.length);
 		}
+		if (pathname === '' || pathname === '/') {
+			parsedUrl.pathname = pathname = '/';
+		}
 
 		// Version
 		if (pathname === '/version') {
@@ -378,8 +381,10 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
 				const rendererCommit = msg2.commit;
 				const myCommit = this._productService.commit;
 				if (rendererCommit && myCommit) {
+					const rendererCommitMajor = rendererCommit.replace(/\.\d+$/, '');
+					const myCommitMajor = myCommit.replace(/\.\d+$/, '');
 					// Running in the built version where commits are defined
-					if (rendererCommit !== myCommit) {
+					if (rendererCommitMajor !== myCommitMajor) {
 						return rejectWebSocketConnection(`Client refused: version mismatch`);
 					}
 				}

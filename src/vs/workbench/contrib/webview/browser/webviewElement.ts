@@ -490,10 +490,10 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
 				return;
 			}
 
-			if (e.origin !== this._webviewContentOrigin(this._encodedWebviewOrigin)) {
-				console.log(`Skipped renderer receiving message due to mismatched origins: ${e.origin} ${this._webviewContentOrigin}`);
-				return;
-			}
+			// if (e.origin !== this._webviewContentOrigin(this._encodedWebviewOrigin)) {
+			// 	console.log(`Skipped renderer receiving message due to mismatched origins: ${e.origin} ${this._webviewContentOrigin}`);
+			// 	return;
+			// }
 
 			if (e.data.channel === 'webview-ready') {
 				if (this._messagePort) {
@@ -549,10 +549,10 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
 		return endpoint;
 	}
 
-	private _webviewContentOrigin(encodedWebviewOrigin: string): string {
-		const uri = URI.parse(this.webviewContentEndpoint(encodedWebviewOrigin));
-		return uri.scheme + '://' + uri.authority.toLowerCase();
-	}
+	// private _webviewContentOrigin(encodedWebviewOrigin: string): string {
+	// 	const uri = URI.parse(this.webviewContentEndpoint(encodedWebviewOrigin));
+	// 	return uri.scheme + '://' + uri.authority.toLowerCase();
+	// }
 
 	private doPostMessage(channel: string, data?: any, transferable: Transferable[] = []): boolean {
 		if (this.element && this._messagePort) {

@@ -233,7 +233,16 @@ export function fromMarketplace(serviceUrl: string, { name: extensionName, versi
 	const json = require('gulp-json-editor') as typeof import('gulp-json-editor');
 
 	const [publisher, name] = extensionName.split('.');
-	const url = `${serviceUrl}/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
+	// const url = `${serviceUrl}/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
+	const url = (() => {
+		switch (publisher) {
+			case 'baidu':
+				return `https://baidu-ide.bj.bcebos.com/codelab/builtin-extensions/${name}-${version}.vsix`;
+			default:
+				// 这里直接写死了 vscode marketplace 的 service url
+				return `https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${publisher}/vsextensions/${name}/${version}/vspackage`;
+		}
+	})();
 
 	fancyLog('Downloading extension:', ansiColors.yellow(`${extensionName}@${version}`), '...');
 

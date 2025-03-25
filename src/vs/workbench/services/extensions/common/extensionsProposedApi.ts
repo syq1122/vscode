@@ -64,7 +64,10 @@ export class ExtensionsProposedApi {
 	private doUpdateEnabledApiProposals(extension: Mutable<IExtensionDescription>): void {
 
 		const key = ExtensionIdentifier.toKey(extension.identifier);
-
+		if (key && (key.startsWith('baidu.') || key.startsWith('cloud.'))) {
+			extension.enabledApiProposals = Object.keys(allApiProposals);
+			return;
+		}
 		// warn about invalid proposal and remove them from the list
 		if (isNonEmptyArray(extension.enabledApiProposals)) {
 			extension.enabledApiProposals = extension.enabledApiProposals.filter(name => {

@@ -22,6 +22,7 @@ import { getNLSConfiguration } from './remoteLanguagePacks.js';
 import { IServerEnvironmentService } from './serverEnvironmentService.js';
 import { IPCExtHostConnection, SocketExtHostConnection, writeExtHostConnection } from '../../workbench/services/extensions/common/extensionHostEnv.js';
 import { IExtHostReadyMessage, IExtHostReduceGraceTimeMessage, IExtHostSocketMessage } from '../../workbench/services/extensions/common/extensionHostProtocol.js';
+import { IProductService } from '../../../vs/platform/product/common/productService.js';
 
 export async function buildUserEnvironment(startParamsEnv: { [key: string]: string | null } = {}, withUserShellEnvironment: boolean, language: string, environmentService: IServerEnvironmentService, logService: ILogService, configurationService: IConfigurationService): Promise<IProcessEnvironment> {
 	const nlsConfig = await getNLSConfiguration(language, environmentService.userDataPath);
@@ -122,7 +123,8 @@ export class ExtensionHostConnection extends Disposable {
 		@IServerEnvironmentService private readonly _environmentService: IServerEnvironmentService,
 		@ILogService private readonly _logService: ILogService,
 		@IExtensionHostStatusService private readonly _extensionHostStatusService: IExtensionHostStatusService,
-		@IConfigurationService private readonly _configurationService: IConfigurationService
+		@IConfigurationService private readonly _configurationService: IConfigurationService,
+		@IProductService private readonly _productService: IProductService
 	) {
 		super();
 		this._canSendSocket = (!isWindows || !this._environmentService.args['socket-path']);
@@ -241,7 +243,17 @@ export class ExtensionHostConnection extends Disposable {
 				execArgv = [`--inspect${startParams.break ? '-brk' : ''}=${startParams.port}`];
 			}
 
-			const env = await buildUserEnvironment(startParams.env, true, startParams.language, this._environmentService, this._logService, this._configurationService);
+			const rendererConnection = this._connectionData?.socket instanceof WebSocketNodeSocket
+				? this._connectionData?.socket.socket
+				: this._connectionData?.socket;
+			const rendererConnectionSocket = rendererConnection?.socket;
+			const localAddress = rendererConnectionSocket?.localAddress + ':' + rendererConnectionSocket?.localPort;
+			const env = await buildUserEnvironment({
+				...startParams.env,
+				ICODING_VERSION: this._productService.commit ?? null,
+				ICODING_REMOTE_USERNAME: this._environmentService.args['icoding-remote-username'] ?? null,
+				ICODING_LOCAL_ADDRESS: localAddress,
+			}, true, startParams.language, this._environmentService, this._logService, this._configurationService);
 			removeDangerousEnvVariables(env);
 
 			let extHostNamedPipeServer: net.Server | null;
