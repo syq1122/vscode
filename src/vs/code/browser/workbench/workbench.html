@@ -35,7 +35,7 @@
 	<!-- Startup (do not modify order of script tags!) -->
 	<script>
 		window.localStorage.setItem('workbenchServerHost', '{{WORKBENCH_SERVER_HOST}}');
-		const baseUrl = new URL('{{WORKBENCH_WEB_BASE_URL}}', window.location.origin).toString();
+		const baseUrl = new URL('{{WORKBENCH_WEB_BASE_URL}}', window.location.origin + window.location.pathname).toString();
 		globalThis._VSCODE_FILE_ROOT = baseUrl + '/out/';
 	</script>
 	<script>

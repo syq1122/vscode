@@ -1169,8 +1169,11 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
 		if (ideDecrypt) {
 			// 解密粘贴的内容
-			const originalText = decrypt(text);
-			viewModel.paste(originalText, pasteOnNewLine, multicursorText, source);
+			(async () => {
+				const originalText = await decrypt(text);
+				console.log('[CloudIDE] codeEditorWidget: _paste:-----------------ideDecrypt:', ideDecrypt);
+				viewModel.paste(originalText, pasteOnNewLine, multicursorText, source);
+			})();
 		} else {
 			viewModel.paste(text, pasteOnNewLine, multicursorText, source);
 		}

@@ -180,7 +180,8 @@ class RemoteAuthoritiesImpl {
 			pathname = window.location.pathname + serverBasePath?.replace(/^\//, '');
 		}
 		this._serverRootPath = paths.posix.join(pathname ?? '/', getServerProductSegment(product));
-		console.log("setServerRootPath this._serverRootPath--------------: " + this._serverRootPath)
+		// this._serverRootPath = paths.posix.join(serverBasePath ?? '/', getServerProductSegment(product)).replace(/^\//, '');
+		console.log("setServerRootPath this._serverRootPath--------------: " + this._serverRootPath);
 	}
 
 	getServerRootPath(): string {
@@ -237,7 +238,8 @@ export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 
 export function getServerProductSegment(product: { quality?: string; commit?: string }) {
 	console.log("getServerProductSegment --------------: ")
-	return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
+	// return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
+	return ``;
 }
 
 /**

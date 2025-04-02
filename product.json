@@ -1,6 +1,6 @@
 {
-    "nameShort": "VSCode",
-    "nameLong": "VSCode",
+    "nameShort": "CloudIDE",
+    "nameLong": "CloudIDE",
     "applicationName": "VSCode",
     "win32AppId": "{{695E0886-15F3-449C-9356-5D72B5DF9174}_VSCode",
     "win32x64AppId": "{{695E0886-15F3-449C-9356-5D72B5DF9174}_VSCode",
@@ -39,7 +39,8 @@
     "quality": "stable",
     "webviewContentExternalBaseUrlTemplate": "{{protocol}}//{{host}}{{pathname}}{{quality}}-{{commit}}/static/out/vs/workbench/contrib/webview/browser/pre/",
     "extensionsGallery": {
-        "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery",
+        "serviceUrl": "http://test.testcloudide.com/app/_apis/public/gallery",
+        "searchUrl": "http://test.testcloudide.com/app/_apis/public/gallery/extensionquery",
         "nlsBaseUrl": "https://www.vscode-unpkg.net/_lp/",
         "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
         "itemUrl": "https://marketplace.visualstudio.com/items",
@@ -2089,6 +2090,8 @@
         "https://portal.azure.com",
         "https://*.baidu.com",
         "http://*.baidu.com",
+        "http://*.testcloudide.com",
+        "https://*.testcloudide.com",
         "https://*.baidu-int.com",
         "http://*.baidu-int.com"
     ],

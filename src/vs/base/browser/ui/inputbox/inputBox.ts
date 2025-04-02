@@ -214,30 +214,44 @@ export class InputBox extends Widget {
 		}
 
 		this.applyStyles();
+
 		// 监听 input box 上面的 copy 和 paste 事件，加解密-todo: 判断是否开启加密
 		const encryptCopiedText = (e: ClipboardEvent, action: 'copy' | 'cut') => {
+			console.log('[CloudIDE] inputBox: encryptCopiedText:-----------------ClipboardEvent: action: ', action);
 			// eslint-disable-next-line no-restricted-globals
 			const textToCopy = window.getSelection()?.toString();
+			console.log('[CloudIDE] inputBox: textToCopy:-----------------', textToCopy);
 			if (textToCopy) {
 				e.preventDefault();
-				const encrypted = encrypt(textToCopy);
-				e.clipboardData?.setData(Mimes.text, encrypted);
-				if (action === 'cut') {
-					this.removeSelection();
-				}
+
+				(async () => {
+					const encrypted = await encrypt(textToCopy);
+					console.log('[CloudIDE] inputBox: textToCopy:encrypted-----------------', encrypted);
+					e.clipboardData?.setData(Mimes.text, encrypted);
+					if (action === 'cut') {
+						this.removeSelection();
+					}
+				})();
 			}
 		};
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		console.log('[CloudIDE] ideDecrypt-----------------', ideDecrypt);
 		if (ideDecrypt) {
 			this.input.addEventListener('copy', e => encryptCopiedText(e, 'copy'));
 			this.input.addEventListener('cut', e => encryptCopiedText(e, 'cut'));
 			this.input.addEventListener('paste', async (e: ClipboardEvent) => {
 				const cipherText = e.clipboardData?.getData(Mimes.text);
+				console.log('[CloudIDE] cipherText-----------------', cipherText);
 				if (cipherText) {
 					e.preventDefault();
-					const originalText = decrypt(cipherText);
-					e.clipboardData?.setData(Mimes.text, originalText);
-					this.insertAtCursor(originalText);
+
+					(async () => {
+						const originalText = await decrypt(cipherText);
+						e.clipboardData?.setData(Mimes.text, originalText);
+						this.insertAtCursor(originalText);
+					})();
+
+
 				}
 			});
 		}
@@ -639,6 +653,7 @@ export class InputBox extends Widget {
 			this.value = content.substr(0, start) + text + content.substr(end);
 			// todo: 判断是否加密
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
+			console.log('[CloudIDE] insertAtCursor ideDecrypt-----------------', ideDecrypt);
 			if (ideDecrypt) {
 				inputElement.setSelectionRange(start + text.length, start + text.length);
 			} else {

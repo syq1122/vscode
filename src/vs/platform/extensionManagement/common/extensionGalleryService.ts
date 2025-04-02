@@ -1157,6 +1157,7 @@ abstract class AbstractExtensionGalleryService implements IExtensionGalleryServi
 	}
 
 	private async queryRawGalleryExtensions(query: Query, token: CancellationToken): Promise<IRawGalleryExtensionsResult> {
+		debugger;
 		if (!this.isEnabled()) {
 			throw new Error('No extension gallery service configured.');
 		}

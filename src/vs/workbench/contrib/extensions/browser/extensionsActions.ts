@@ -206,6 +206,7 @@ export class PromptExtensionInstallFailureAction extends Action {
 	}
 
 	private async getDownloadUrl(): Promise<URI | undefined> {
+		console.log('[CloudIDE] getDownloadUrl--------------------------');
 		if (isIOS) {
 			return undefined;
 		}
@@ -460,28 +461,28 @@ export class InstallAction extends ExtensionAction {
 			return;
 		}
 
-		if (this.extension.gallery && !this.extension.gallery.isSigned) {
-			const { result } = await this.dialogService.prompt({
-				type: Severity.Warning,
-				message: localize('not signed', "'{0}' is an extension from an unknown source. Are you sure you want to install?", this.extension.displayName),
-				detail: localize('not signed detail', "Extension is not signed."),
-				buttons: [
-					{
-						label: localize('install anyway', "Install Anyway"),
-						run: () => {
-							this.options.donotVerifySignature = true;
-							return true;
-						}
-					}
-				],
-				cancelButton: {
-					run: () => false
-				}
-			});
-			if (!result) {
-				return;
-			}
-		}
+		// if (this.extension.gallery && !this.extension.gallery.isSigned) {
+		// 	const { result } = await this.dialogService.prompt({
+		// 		type: Severity.Warning,
+		// 		message: localize('not signed', "'{0}' is an extension from an unknown source. Are you sure you want to install?", this.extension.displayName),
+		// 		detail: localize('not signed detail', "Extension is not signed."),
+		// 		buttons: [
+		// 			{
+		// 				label: localize('install anyway', "Install Anyway"),
+		// 				run: () => {
+		// 					this.options.donotVerifySignature = true;
+		// 					return true;
+		// 				}
+		// 			}
+		// 		],
+		// 		cancelButton: {
+		// 			run: () => false
+		// 		}
+		// 	});
+		// 	if (!result) {
+		// 		return;
+		// 	}
+		// }
 
 		if (this.extension.deprecationInfo) {
 			let detail: string | MarkdownString = localize('deprecated message', "This extension is deprecated as it is no longer being maintained.");
@@ -1253,7 +1254,7 @@ async function getContextMenuActionsGroups(extension: IExtension | undefined | n
 			cksOverlay.push(['extensionDisallowInstall', !!extension.deprecationInfo?.disallowInstall]);
 			cksOverlay.push(['isExtensionAllowed', allowedExtensionsService.isAllowed({ id: extension.identifier.id, publisherDisplayName: extension.publisherDisplayName }) === true]);
 			cksOverlay.push(['isPreReleaseExtensionAllowed', allowedExtensionsService.isAllowed({ id: extension.identifier.id, publisherDisplayName: extension.publisherDisplayName, prerelease: true }) === true]);
-			cksOverlay.push(['extensionIsUnsigned', extension.gallery && !extension.gallery.isSigned]);
+			// cksOverlay.push(['extensionIsUnsigned', extension.gallery && !extension.gallery.isSigned]);
 
 			const [colorThemes, fileIconThemes, productIconThemes, extensionUsesAuth] = await Promise.all([workbenchThemeService.getColorThemes(), workbenchThemeService.getFileIconThemes(), workbenchThemeService.getProductIconThemes(), authenticationUsageService.extensionUsesAuth(extension.identifier.id.toLowerCase())]);
 			cksOverlay.push(['extensionHasColorThemes', colorThemes.some(theme => isThemeFromExtension(theme, extension))]);
@@ -2540,10 +2541,10 @@ export class ExtensionStatusAction extends ExtensionAction {
 			return;
 		}
 
-		if (this.extension.state === ExtensionState.Uninstalled && this.extension.gallery && !this.extension.gallery.isSigned) {
-			this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('not signed tooltip', "This extension is not signed by the Extension Marketplace.")) }, true);
-			return;
-		}
+		// if (this.extension.state === ExtensionState.Uninstalled && this.extension.gallery && !this.extension.gallery.isSigned) {
+		// 	this.updateStatus({ icon: warningIcon, message: new MarkdownString(localize('not signed tooltip', "This extension is not signed by the Extension Marketplace.")) }, true);
+		// 	return;
+		// }
 
 		if (this.extension.deprecationInfo) {
 			if (this.extension.deprecationInfo.extension) {

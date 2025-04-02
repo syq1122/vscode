@@ -114,6 +114,11 @@ function make_package() {
 	$cmd mkdir -p $WORKSPACE/icoding-release
 	$cmd cd $WORKSPACE/icoding-release
 
+	# 如果目录存在则复制 复制插件
+	if [ -d "$SOURCE/.build/builtInExtensions" ]; then
+		$cmd cp -rf $SOURCE/.build/builtInExtensions/ $SOURCE/reverse/vscode-server-linux-$ARCH-web/extensions/
+	fi
+
 	$cmd rm -rf vscode-server-linux-$ARCH-web/
 	$cmd cp -r $SOURCE/reverse/vscode-server-linux-$ARCH-web .
 	$cmd cd vscode-server-linux-$ARCH-web/

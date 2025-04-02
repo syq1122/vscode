@@ -35,7 +35,8 @@ export class BrowserClipboardService extends BaseBrowserClipboardService {
 			type = 'vscode-tests'; // force in-memory clipboard for tests to avoid permission issues
 		}
 		if (ideDecrypt) {
-			const encrypted = encrypt(text);
+			const encrypted = await encrypt(text);
+			console.log('[CloudIDE] writeText:-----------------:', encrypted);
 			return super.writeText(encrypted, type);
 		}
 		return super.writeText(text, type);

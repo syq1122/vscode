@@ -226,6 +226,7 @@ function raceWithTimeoutCancellation<T>(promise: Promise<T>, timeoutCancellation
 }
 
 async function connectToRemoteExtensionHostAgent<T extends RemoteConnection>(options: ISimpleConnectionOptions<T>, connectionType: ConnectionType, args: any | undefined, timeoutCancellationToken: CancellationToken): Promise<{ protocol: PersistentProtocol; ownsProtocol: boolean }> {
+	debugger
 	const logPrefix = connectLogPrefix(options, connectionType);
 
 	options.logService.trace(`${logPrefix} 1/6. invoking socketFactory.connect().`);
@@ -388,6 +389,7 @@ export interface IConnectionOptions<T extends RemoteConnection = RemoteConnectio
 }
 
 async function resolveConnectionOptions<T extends RemoteConnection>(options: IConnectionOptions<T>, reconnectionToken: string, reconnectionProtocol: PersistentProtocol | null): Promise<ISimpleConnectionOptions<T>> {
+	debugger;
 	const { connectTo, connectionToken } = await options.addressProvider.getAddress();
 	return {
 		commit: options.commit,

@@ -164,6 +164,7 @@ export interface IRemoteAuthorityResolverService {
 }
 
 export function getRemoteAuthorityPrefix(remoteAuthority: string): string {
+	debugger
 	const plusIndex = remoteAuthority.indexOf('+');
 	if (plusIndex === -1) {
 		return remoteAuthority;

@@ -20,7 +20,8 @@ import { IAccessibilityService } from '../../../../../platform/accessibility/com
 import { ILogService } from '../../../../../platform/log/common/log.js';
 import { ClipboardDataToCopy, ClipboardEventUtils, ClipboardStoredMetadata, InMemoryClipboardMetadataManager } from '../clipboardUtils.js';
 import { _debugComposition, ITextAreaWrapper, ITypeData, TextAreaState } from './textAreaEditContextState.js';
-import { decrypt, encrypt, getGlobalConfig } from '../../../../../base/common/cipherForClipboard.js';
+// import { decrypt, encrypt, getGlobalConfig } from '../../../../../base/common/cipherForClipboard.js';
+import { decrypt, getGlobalConfig } from '../../../../../base/common/cipherForClipboard.js';
 import { Mimes } from '../../../../../base/common/mime.js';
 
 
@@ -383,15 +384,17 @@ export class TextAreaInput extends Disposable {
 			// try the in-memory store
 			metadata = metadata || InMemoryClipboardMetadataManager.INSTANCE.get(text);
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('ideDecrypt-text', ideDecrypt)
+			console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
 			if (ideDecrypt) {
 				// 解密粘贴的内容
-				const originalText = decrypt(text);
-				e.clipboardData.setData(Mimes.text, originalText);
-				this._onPaste.fire({
-					text: originalText,
-					metadata: metadata
-				});
+				(async () => {
+					const originalText = await decrypt(text);
+					e.clipboardData?.setData(Mimes.text, originalText);
+					this._onPaste.fire({
+						text: originalText,
+						metadata: metadata
+					});
+				})();
 			} else {
 				this._onPaste.fire({
 					text: text,
@@ -625,13 +628,25 @@ export class TextAreaInput extends Disposable {
 		);
 
 		e.preventDefault();
+		console.log('[CloudIDE] textAreaEditContextInput _ensureClipboardGetsEditorSelection-----------------');
 		if (e.clipboardData) {
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('ideDecrypt-text-clipboardData', ideDecrypt)
+			console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
 			if (ideDecrypt) {
-				const encryptedText = encrypt(dataToCopy.text);
-				const encryptedHtml = dataToCopy.html ? encrypt(dataToCopy.html) : null;
-				ClipboardEventUtils.setTextData(e.clipboardData, encryptedText, encryptedHtml, storedMetadata);
+				// const cData = e.clipboardData;
+				// (async () => {
+				// 	const encryptedText = await encrypt(dataToCopy.text);
+				// 	const encryptedHtml = dataToCopy.html ? await encrypt(dataToCopy.html) : null;
+				// 	console.log('[CloudIDE] textAreaEditContextInput encryptedText-----------------', encryptedText);
+				// 	console.log('[CloudIDE] textAreaEditContextInput encryptedHtml-----------------', encryptedHtml);
+				// 	// 添加 null 检查
+				// 	if (e.clipboardData) {
+				// 		ClipboardEventUtils.setTextData(e.clipboardData, encryptedText, encryptedHtml, storedMetadata);
+				// 	} else {
+				// 		console.error('clipboardData is null!');
+				// 	}
+				// })();
+				ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
 			} else {
 				ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
 			}

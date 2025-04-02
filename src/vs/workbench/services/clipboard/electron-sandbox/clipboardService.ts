@@ -3,13 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
-import { URI } from '../../../../base/common/uri.js';
-import { isMacintosh } from '../../../../base/common/platform.js';
-import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
-import { INativeHostService } from '../../../../platform/native/common/native.js';
-import { VSBuffer } from '../../../../base/common/buffer.js';
-import { encrypt, decrypt, getGlobalConfig } from '../../../../base/common/cipherForClipboard.js';
+import {IClipboardService} from '../../../../platform/clipboard/common/clipboardService.js';
+import {URI} from '../../../../base/common/uri.js';
+import {isMacintosh} from '../../../../base/common/platform.js';
+import {InstantiationType, registerSingleton} from '../../../../platform/instantiation/common/extensions.js';
+import {INativeHostService} from '../../../../platform/native/common/native.js';
+import {VSBuffer} from '../../../../base/common/buffer.js';
+import {decrypt, encrypt, getGlobalConfig} from '../../../../base/common/cipherForClipboard.js';
 
 export class NativeClipboardService implements IClipboardService {
 
@@ -26,9 +26,12 @@ export class NativeClipboardService implements IClipboardService {
 	}
 
 	async writeText(text: string, type?: 'selection' | 'clipboard'): Promise<void> {
+		console.log('writeText: ', text);
+		console.log('[CloudIDE] NativeClipboardService: writeText:-----------------:', text);
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
 		if (ideDecrypt) {
-			const encrypted = encrypt(text);
+			const encrypted = await encrypt(text);
+			console.log('[CloudIDE] NativeClipboardService: writeClipboardText:-----------------:', encrypted);
 			return this.nativeHostService.writeClipboardText(encrypted, type);
 		}
 		return this.nativeHostService.writeClipboardText(text, type);
@@ -36,10 +39,10 @@ export class NativeClipboardService implements IClipboardService {
 
 	async readText(type?: 'selection' | 'clipboard'): Promise<string> {
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		console.log('[CloudIDE] NativeClipboardService: readText:-----------------ideDecrypt:', ideDecrypt);
 		if (ideDecrypt) {
 			const cipherText = await this.nativeHostService.readClipboardText(type);
-			const originalText = decrypt(cipherText);
-			return originalText;
+			return decrypt(cipherText);
 		}
 		return this.nativeHostService.readClipboardText(type);
 	}
