@@ -238,8 +238,7 @@ export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 
 export function getServerProductSegment(product: { quality?: string; commit?: string }) {
 	console.log("getServerProductSegment --------------: ")
-	// return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
-	return ``;
+	return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
 }
 
 /**
