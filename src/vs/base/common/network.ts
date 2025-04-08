@@ -189,7 +189,10 @@ class RemoteAuthoritiesImpl {
 	}
 
 	private get _remoteResourcesPath(): string {
-		return paths.posix.join(this._serverRootPath, Schemas.vscodeRemoteResource);
+		if (isWeb) {
+			return paths.posix.join(this._serverRootPath, Schemas.vscodeRemoteResource);
+		}
+		return '/' + Schemas.vscodeRemoteResource;
 	}
 
 	set(authority: string, host: string, port: number): void {
@@ -239,6 +242,7 @@ export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 export function getServerProductSegment(product: { quality?: string; commit?: string }) {
 	console.log("getServerProductSegment --------------: ")
 	return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
+	// return ``;
 }
 
 /**

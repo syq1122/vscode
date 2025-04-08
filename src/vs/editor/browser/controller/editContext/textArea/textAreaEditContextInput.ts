@@ -627,6 +627,7 @@ export class TextAreaInput extends Disposable {
 		);
 
 		e.preventDefault();
+
 		console.log('[CloudIDE] textAreaEditContextInput _ensureClipboardGetsEditorSelection-----------------');
 		if (e.clipboardData) {
 			const ideDecrypt = getGlobalConfig('anticopySwitch');

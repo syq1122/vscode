@@ -25,10 +25,10 @@ function set_up_global_variables() {
 	echo "COMMIT: ${COMMIT}"
 }
 
-function install_global_dependencies() {
-	echo "==> Installing global dependencies..."
-	npm install -g yarn create-dmg < /dev/null
-}
+#function install_global_dependencies() {
+#	echo "==> Installing global dependencies..."
+#	npm install -g yarn create-dmg < /dev/null
+#}
 
 function update_source_product_dot_json() {
 	# 提前修改好源码里面的product.json， build内部插件的时候需要用到
@@ -41,20 +41,20 @@ function update_source_product_dot_json() {
 function install_build_dependencies() {
 	echo "==> Install build dependencies..."
 	cd ${SOURCE}
-	PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ELECTRON_SKIP_BINARY_DOWNLOAD=1 yarn --frozen-lockfile < /dev/null
+	PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm install --frozen-lockfile < /dev/null
 }
 
 function compile_build_minify() {
 	echo "==> Compiling, building, and minifying vscode darwin..."
 	cd ${SOURCE}
-	yarn gulp compile-build  < /dev/null
-	yarn gulp extensions-ci < /dev/null
-	yarn gulp minify-vscode < /dev/null
+	npm run gulp compile-build  < /dev/null
+	npm run gulp extensions-ci < /dev/null
+	npm run gulp minify-vscode < /dev/null
 }
 
 function package_vscode_darwin() {
 	echo "==> Packaging vscode darwin..."
-	yarn gulp vscode-darwin-${VSCODE_ARCH}-min-ci < /dev/null
+	npm run gulp vscode-darwin-${VSCODE_ARCH}-min-ci < /dev/null
 }
 
 function update_app_product_dot_json() {
@@ -63,7 +63,7 @@ function update_app_product_dot_json() {
 	local vscode_package_path=${BUILD_DIRECTORY}/VSCode-darwin-${VSCODE_ARCH}
 
 	cd ${SOURCE}/build/agile-pipelines
-	export ICODING_PRODUCT_JSON_PATH=${vscode_package_path}/iCoding.app/Contents/Resources/app/product.json
+	export ICODING_PRODUCT_JSON_PATH=${vscode_package_path}/CloudIDE.app/Contents/Resources/app/product.json
 	node updateProduct.js
 }
 
@@ -73,11 +73,11 @@ function create_dmg() {
 	local vscode_package_path=${BUILD_DIRECTORY}/VSCode-darwin-${VSCODE_ARCH}
 	cd ${vscode_package_path}
 	# Create dmg
-	create-dmg iCoding.app < /dev/null
+	create-dmg CloudIDE.app < /dev/null
 }
 
 function prebuild() {
-	install_global_dependencies
+#	install_global_dependencies
 	update_source_product_dot_json
 }
 

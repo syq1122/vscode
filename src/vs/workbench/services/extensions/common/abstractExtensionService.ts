@@ -650,7 +650,6 @@ export abstract class AbstractExtensionService extends Disposable implements IEx
 	}
 
 	private async _resolveAuthorityWithLogging(remoteAuthority: string): Promise<ResolverResult> {
-		debugger
 		const authorityPrefix = getRemoteAuthorityPrefix(remoteAuthority);
 		const sw = StopWatch.create(false);
 		this._logService.info(`Invoking resolveAuthority(${authorityPrefix})...`);

@@ -2,43 +2,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-// import { generateUuid } from './uuid.js';
-// // eslint-disable-next-line local/code-import-patterns, local/code-amd-node-module
-// import CryptoJS from 'crypto-js';
-//
-// const textEncryptionKey: string = generateUuid();
-//
-// const commonPrefix = 'cloud-ide-clipboard/';
-//
-// // 加密文本
-// export function encrypt(content: string) {
-// 	const encrypted = CryptoJS.AES.encrypt(content, textEncryptionKey).toString();
-// 	return `${commonPrefix}${encrypted}`;
-// }
-//
-// // 解密文本
-// export function decrypt(cipherText: string) {
-// 	if (cipherText.startsWith(commonPrefix)) {
-// 		const body = cipherText.slice(commonPrefix.length);
-// 		const bytes = CryptoJS.AES.decrypt(body, textEncryptionKey);
-// 		return bytes.toString(CryptoJS.enc.Utf8);
-// 	}
-// 	return cipherText;
-// }
-// const ideGlobalConfig: { [key: string]: any } = {};
-// // Function to set the global variable
-// export function setGlobalConfig(key: string, value: any) {
-// 	ideGlobalConfig[key] = value;
-// }
-// // Function to get the global variable
-// export function getGlobalConfig(key: string): any {
-// 	return ideGlobalConfig[key];
-// }
-
-
-// import { randomBytes,createCipheriv,createDecipheriv } from 'node:crypto'
-// import {randomBytes} from "node:crypto";
-// const { randomBytes } = require('crypto');
 const secretKey = 'Gitee-CloudIDECP'; // 16 字节 密钥，用于AES加密
 const iv = '1234561234567890'; // 16 字节 初始化向量，用于AES加密
 const commonPrefix = 'CloudIDECopy';
@@ -124,7 +87,6 @@ async function encryptAES(plaintext: string, key: string, iv: string): Promise<s
  * @returns UTF-8 解密字符串
  */
 async function decryptAES(ciphertext: string, key: string, iv: string): Promise<string> {
-	debugger
 	// 1. 准备密钥和 IV
 	const encoder = new TextEncoder();
 	const keyData = encoder.encode(key);
