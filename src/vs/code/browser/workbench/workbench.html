@@ -1,6 +1,6 @@
 <!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
 <!DOCTYPE html>
-<html>
+<html class="dark">
 	<head>
 		<script>
 			performance.mark('code/didStartRenderer');
@@ -25,11 +25,574 @@
 		<!-- Workbench Icon/Manifest/CSS -->
 		<link rel="icon" href="{{WORKBENCH_WEB_BASE_URL}}/resources/server/favicon.ico" type="image/x-icon" />
 		<link rel="manifest" href="{{WORKBENCH_WEB_BASE_URL}}/resources/server/manifest.json" crossorigin="use-credentials" />
-		<link rel="stylesheet" href="{{WORKBENCH_WEB_BASE_URL}}/out/vs/code/browser/workbench/workbench.css">
+		<style>
 
+            .dark {
+                --background: 220 7% 13%;
+                --foreground: 0 0% 98%;
+                --card: 200 1% 8%;
+                --card-foreground: 0 0% 98%;
+                --popover: 200 1% 8%;
+                --popover-foreground: 0 0% 98%;
+                --primary: 0 0% 98%;
+                --primary-foreground: 240 5.9% 10%;
+                --secondary: 240 3.7% 15.9%;
+                --secondary-foreground: 0 0% 98%;
+                --muted: 240 3.7% 15.9%;
+                --muted-foreground: 240 5% 64.9%;
+                --accent: 240 3.7% 15.9%;
+                --accent-foreground: 0 0% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 0 0% 98%;
+                --border: 240 3.7% 15.9%;
+                --input: 240 3.7% 15.9%;
+                --ring: 240 4.9% 83.9%;
+                --brand: #2161e0;
+                --brand-opacity-1: #2161e029;
+                --text-gray: #9599a6;
+                --text-gray-hover: #9599a6;
+                --text-black: #111314;
+                --line-2: rgba(194,202,242,.16);
+                --line-1: rgba(194,202,242,.08);
+                --line-3: rgba(194,202,242,.24);
+                --bg-1: rgba(237,241,248,.05);
+                --bg-2: #24262b;
+                --bg-3: #33363d;
+                --bg-code: #181a1f;
+                --bg-tr-1: rgba(194,202,242,.1);
+                --bg-tr-2: rgba(194,202,242,.15);
+                --text-default: #adb0b8;
+                --text-color-text-1: #c7ccd6;
+                --text-highlight: #d5d8e0;
+                --opacity-bg-color: #edf1f8;
+                --opacity-bg-color-1: rgba(194,202,242,.1);
+                --opacity-bg-color-2: rgba(194,202,242,.15);
+                --error: #cc4b53;
+                --text-disable: #5c6373;
+                --fill-light: #d5d8e0;
+                --user-menu-bg-color: #292b2e;
+                --user-menu-error-shadow: #3b282c
+            }
+
+            .light {
+                --brand: #2161e0;
+                --brand-opacity-1: "#2161E029";
+                --text-gray: #617080;
+                --text-black: #111314;
+                --line-2: rgba(221,226,233,.16);
+                --line-1: #dde2e914;
+                --bg-1: rgba(237,241,248,.05);
+                --bg-2: #f2f4f7;
+                --bg-3: #fff;
+                --bg-code: #fff;
+                --bg-tr-1: rgba(77,107,153,.08);
+                --bg-tr-2: rgba(77,107,153,.12);
+                --text-default: #adb0b8;
+                --text-color-text-1: #c7ccd6;
+                --text-highlight: #17181a;
+                --opacity-bg-color-1: #edf1f80d;
+                --opacity-bg-color-2: #edf1f81a;
+                --error: #b55e63;
+                --text-disable: #adbdcc;
+                --fill-light: #d5d8e0
+            }
+
+            .deepblue {
+                --background: 220 7% 13%;
+                --foreground: 0 0% 98%;
+                --card: 200 1% 8%;
+                --card-foreground: 0 0% 98%;
+                --popover: 200 1% 8%;
+                --popover-foreground: 0 0% 98%;
+                --primary: 0 0% 98%;
+                --primary-foreground: 240 5.9% 10%;
+                --secondary: 240 3.7% 15.9%;
+                --secondary-foreground: 0 0% 98%;
+                --muted: 240 3.7% 15.9%;
+                --muted-foreground: 240 5% 64.9%;
+                --accent: 240 3.7% 15.9%;
+                --accent-foreground: 0 0% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 0 0% 98%;
+                --border: 240 3.7% 15.9%;
+                --input: 240 3.7% 15.9%;
+                --ring: 240 4.9% 83.9%;
+                --brand: #2161e0;
+                --brand-opacity-1: #2161e029;
+                --text-gray: #9599a6;
+                --text-black: #111314;
+                --line-2: rgba(170,188,242,.16);
+                --line-1: rgba(170,188,242,.08);
+                --line-3: rgba(170,188,242,.24);
+                --bg-1: rgba(237,241,248,.05);
+                --bg-2: #252a38;
+                --bg-3: #343b4d;
+                --bg-code: #171b26;
+                --bg-tr-1: rgba(194,202,242,.1);
+                --bg-tr-2: rgba(194,202,242,.15);
+                --text-default: #dadde5;
+                --text-color-text-1: #c7ccd6;
+                --text-highlight: #d5d8e0;
+                --opacity-bg-color: #edf1f8;
+                --opacity-bg-color-1: rgba(170,188,242,.1);
+                --opacity-bg-color-2: rgba(170,188,242,.15);
+                --error: #cc4b53;
+                --text-disable: #5c6373;
+                --fill-light: #d5d8e0;
+                --user-menu-bg-color: #292b2e;
+                --user-menu-error-shadow: #3b282c
+            }
+
+            * {
+                border-color: hsl(var(--border))
+            }
+
+            body {
+                background-color: var(--bg-2);
+                color: hsl(var(--foreground))
+            }
+
+            ul {
+                list-style: disc none outside;
+                list-style: initial
+            }
+
+            html,html.dark,html.deepblue {
+                --skeleton-color-bg: rgba(234,237,241,.05);
+                --skeleton-color-bg2: rgba(221,226,233,.15);
+                --skeleton-color-bg3: rgba(60,62,64,.3);
+                --skeleton-color-text: #c7ccd6;
+                --skeleton-color-bg4: rgba(194,202,242,.08)
+            }
+
+            html.light {
+                --skeleton-color-bg: rgba(77,107,153,.064);
+                --skeleton-color-bg2: rgba(77,107,153,.104);
+                --skeleton-color-bg3: rgba(77,107,153,.16);
+                --skeleton-color-text: #c7ccd6
+            }
+
+            .rd-Skeleton {
+                bottom: 0;
+                height: 100%;
+                left: 0;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 100%;
+                z-index: 1
+            }
+
+            @keyframes rd-skeleton-circle {
+                0% {
+                    background-position: 100% 50%
+                }
+
+                to {
+                    background-position: 0 50%
+                }
+            }
+
+            .rd-Skeleton-animate .rd-Skeleton-item,.rd-Skeleton-animate .rd-Skeleton-item--round:after {
+                animation: rd-skeleton-circle 1.5s linear infinite;
+                background: linear-gradient(90deg,var(--skeleton-color-bg) 25%,var(--skeleton-color-bg2) 37%,var(--skeleton-color-bg) 63%);
+                background-size: 400% 100%
+            }
+
+            .rd-Skeleton-item {
+                background: var(--skeleton-color-bg);
+                /* border-radius: .25rem; */
+                position: absolute
+            }
+
+            .rd-Skeleton-item--round {
+                position: absolute
+            }
+
+            .rd-Skeleton-item--round:after {
+                background: var(--skeleton-color-bg);
+                border-radius: 50%;
+                bottom: 0;
+                content: "";
+                height: 0;
+                left: 0;
+                margin: auto;
+                padding-bottom: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 100%
+            }
+
+            .rd-Skeleton-item--border {
+                border-color: var(--skeleton-color-bg);
+                border-style: solid;
+                position: absolute
+            }
+
+            .rd-Skeleton--dev {
+                background: #fff;
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+                z-index: 9999
+            }
+
+            .rd-Skeleton-iconBlock {
+                align-content: center;
+                align-items: center;
+                display: inline-flex;
+                flex-wrap: wrap;
+                height: 100%;
+                justify-content: center;
+                position: absolute;
+                width: 100%
+            }
+
+            .rd-Skeleton-iconBlock--auto {
+                position: absolute
+            }
+
+            .rd-Skeleton-iconBlock--bg {
+                background: var(--skeleton-color-bg3);
+                border-radius: .25rem
+            }
+
+            .rd-Skeleton-iconBlock--chart .rd-Skeleton-iconBlock-icon {
+                max-width: 6.25rem;
+                width: 19.14%
+            }
+
+            .rd-Skeleton-iconBlock-icon {
+                max-width: 12.5rem;
+                min-width: 2.25rem;
+                width: 22.7%
+            }
+
+            .rd-Skeleton-iconBlock-text {
+                color: var(--skeleton-color-text);
+                flex-shrink: 1;
+                font-family: PingFang SC;
+                font-size: .875rem;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.375rem;
+                margin-top: 1.25rem;
+                text-align: center;
+                width: 100%
+            }
+
+            .skt-header {
+                background-color: var(--bg-2);
+                font-family: SF Pro Text,-apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,sans-serif;
+                font-size: 13px;
+                justify-content: space-between;
+                padding-left: 8px;
+                padding-right: 10px
+            }
+
+            .skt-header * {
+                cursor: not-allowed
+            }
+
+            .skt-header-l {
+                background-color: var(--bg-2)
+            }
+
+            .skt-header-l img {
+                display: block;
+                height: 20px;
+                width: 20px
+            }
+
+            .skt-header-l-icon1 {
+                background-color: var(--opacity-bg-color-2);
+                border-radius: 4px;
+                height: 28px;
+                margin-right: 12px;
+                width: 28px
+            }
+
+            .skt-header-l-icon1 svg {
+                margin: 1px 0 0 1px
+            }
+
+            .skt-header-l-icon2 {
+                gap: 10px;
+                margin-right: 8px
+            }
+
+            .skt-header-l-icon2 svg:first-child {
+                height: 16.5px;
+                width: 27px
+            }
+
+            .skt-header-l-prj img {
+                margin-right: 6px
+            }
+
+            .skt-header-l-name {
+                font-weight: 600;
+                letter-spacing: .3px;
+                margin-right: 8px;
+                max-width: 180px;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap
+            }
+
+            .skt-header-r {
+                background-color: var(--bg-2)
+            }
+
+            .skt-header-r-icon {
+                margin-left: 16px
+            }
+
+            .skt-header-r-img {
+                margin-left: 22px
+            }
+
+            .skt-header-r img {
+                border-radius: 50%;
+                display: block;
+                height: 24px;
+                width: 24px
+            }
+        </style>
+		<link rel="stylesheet" href="{{WORKBENCH_WEB_BASE_URL}}/out/vs/code/browser/workbench/workbench.css" media="print" onload="this.media='all'">
 	</head>
 
 	<body aria-label="">
+		<div id="cloudide-skeleton">
+            <div class="rd-Skeleton rd-Skeleton-animate">
+                <div class="rd-Skeleton-item--border" style="
+      width: calc(100% - 313px);
+      height: calc(100% - 74px);
+      top: 44px;
+      left: 313px;
+      background: var(--bg-code);
+      border-width: 1px;
+      outline: 1px solid rgb(var(--primary-6));
+      border-radius: 4px;
+    ">
+                    <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 240px;
+        height: 324px;
+        transform: translate(-50%, -50%);
+      ">
+                        <div class="rd-Skeleton-item" style="width: 48px; height: 48px; top: 0; left: 50%; margin-left: -24px"></div>
+                        <div class="rd-Skeleton-item" style="width: 240px; height: 12px; top: 118px; border-radius: 2px"></div>
+                        <div class="rd-Skeleton-item" style="width: 240px; height: 12px; top: 154px; border-radius: 2px"></div>
+                        <div class="rd-Skeleton-item" style="width: 240px; height: 12px; top: 192px; border-radius: 2px"></div>
+                        <div class="rd-Skeleton-item" style="width: 240px; height: 12px; top: 230px; border-radius: 2px"></div>
+                        <div class="rd-Skeleton-item" style="width: 240px; height: 12px; top: 268px; border-radius: 2px"></div>
+                        <div class="rd-Skeleton-item" style="width: 240px; height: 12px; top: 300px; border-radius: 2px"></div>
+                    </div>
+                </div>
+                <div class="rd-Skeleton-item" style="
+      width: 484px;
+      height: 28px;
+      top: 8px;
+      left: 50%;
+      border-radius: 4px;
+      margin-left: -92px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 14px;
+      right: 83px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 14px;
+      right: 51px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 14px;
+      right: 15px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 20px;
+      height: 20px;
+      top: 60px;
+      left: 10px;
+      /* border-radius: 50px; */
+    "></div>
+                <!-- <div style="
+      height: 22px;
+      position: absolute;
+      top: 52px;
+      left: 14px;
+      border-radius: 2px;
+      font-size: 13px;
+      font-weight: 600;
+    ">File
+  </div> -->
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 82px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 102px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 122px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 142px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 162px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 182px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 202px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 222px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 242px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 244px;
+      height: 12px;
+      top: 262px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 144px;
+      height: 12px;
+      top: 282px;
+      left: 55px;
+      border-radius: 2px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 116px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 154px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 192px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 230px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 268px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 306px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+                <div class="rd-Skeleton-item" style="
+      width: 16px;
+      height: 16px;
+      top: 344px;
+      left: 14px;
+      border-radius: 4px;
+    "></div>
+	<div class="rd-Skeleton-item" style="
+	width: 28px;
+	height: 28px;
+	left: 6px;
+	bottom: 30px;
+	border-radius: 50px;
+  "></div>
+	<div class="rd-Skeleton-item" style="
+	width: 28px;
+	height: 28px;
+	left: 8px;
+	bottom: 80px;
+	border-radius: 30px;
+	"></div>
+                <div class="rd-Skeleton-item" style="
+      width: 28px;
+      height: 28px;
+      left: 8px;
+      bottom: 30px;
+      border-radius: 4px;
+    "></div>
+            </div>
+        </div>
+        <div id="root">
+        <!--<?- html ?>-->
+        </div>
 	</body>
 
 	<!-- Startup (do not modify order of script tags!) -->
