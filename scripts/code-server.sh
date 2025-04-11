@@ -22,7 +22,6 @@ function code() {
 	fi
 
 	popd
-
 	NODE_ENV=development \
 	VSCODE_DEV=1 \
 	$NODE $ROOT/scripts/code-server.js "$@"

@@ -215,27 +215,24 @@ export class InputBox extends Widget {
 
 		this.applyStyles();
 
-		// 监听 input box 上面的 copy 和 paste 事件，加解密-todo: 判断是否开启加密
+		// 监听 input box 上面的 copy 和 paste 事件，加解密: 判断是否开启加密
 		const encryptCopiedText = (e: ClipboardEvent, action: 'copy' | 'cut') => {
-			console.log('[CloudIDE] inputBox: encryptCopiedText:-----------------ClipboardEvent: action: ', action);
+			// console.log('[CloudIDE] inputBox: encryptCopiedText:-----------------ClipboardEvent: action: ', action);
 			// eslint-disable-next-line no-restricted-globals
 			const textToCopy = window.getSelection()?.toString();
-			console.log('[CloudIDE] inputBox: textToCopy:-----------------', textToCopy);
+			// console.log('[CloudIDE] inputBox: textToCopy:-----------------', textToCopy);
 			if (textToCopy) {
 				e.preventDefault();
-
-				(async () => {
-					const encrypted = await encrypt(textToCopy);
-					console.log('[CloudIDE] inputBox: textToCopy:encrypted-----------------', encrypted);
-					e.clipboardData?.setData(Mimes.text, encrypted);
-					if (action === 'cut') {
-						this.removeSelection();
-					}
-				})();
+				const encrypted = encrypt(textToCopy);
+				// console.log('[CloudIDE] inputBox: textToCopy:encrypted-----------------', encrypted);
+				e.clipboardData?.setData(Mimes.text, encrypted);
+				if (action === 'cut') {
+					this.removeSelection();
+				}
 			}
 		};
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
-		console.log('[CloudIDE] ideDecrypt-----------------', ideDecrypt);
+		// console.log('[CloudIDE] ideDecrypt-----------------', ideDecrypt);
 		if (ideDecrypt) {
 			this.input.addEventListener('copy', e => encryptCopiedText(e, 'copy'));
 			this.input.addEventListener('cut', e => encryptCopiedText(e, 'cut'));
@@ -245,13 +242,9 @@ export class InputBox extends Widget {
 				if (cipherText) {
 					e.preventDefault();
 
-					(async () => {
-						const originalText = await decrypt(cipherText);
-						e.clipboardData?.setData(Mimes.text, originalText);
-						this.insertAtCursor(originalText);
-					})();
-
-
+					const originalText = decrypt(cipherText);
+					e.clipboardData?.setData(Mimes.text, originalText);
+					this.insertAtCursor(originalText);
 				}
 			});
 		}

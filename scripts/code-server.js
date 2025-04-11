@@ -29,6 +29,7 @@ async function main() {
 	}
 
 	process.env['VSCODE_SERVER_PORT'] = '9888';
+	process.env['VSCODE_SERVER_HOST'] = '0.0.0.0';
 
 	const serverArgs = process.argv.slice(2).filter(v => v !== '--launch');
 	const addr = await startServer(serverArgs);

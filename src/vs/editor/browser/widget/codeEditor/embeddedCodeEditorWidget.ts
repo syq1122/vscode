@@ -16,6 +16,7 @@ import { IContextKeyService } from '../../../../platform/contextkey/common/conte
 import { IInstantiationService, ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
+import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
 
 export class EmbeddedCodeEditorWidget extends CodeEditorWidget {
 	private readonly _parentEditor: ICodeEditor;
@@ -34,9 +35,10 @@ export class EmbeddedCodeEditorWidget extends CodeEditorWidget {
 		@INotificationService notificationService: INotificationService,
 		@IAccessibilityService accessibilityService: IAccessibilityService,
 		@ILanguageConfigurationService languageConfigurationService: ILanguageConfigurationService,
-		@ILanguageFeaturesService languageFeaturesService: ILanguageFeaturesService
+		@ILanguageFeaturesService languageFeaturesService: ILanguageFeaturesService,
+		@IClipboardService clipboardService: IClipboardService
 	) {
-		super(domElement, { ...parentEditor.getRawOptions(), overflowWidgetsDomNode: parentEditor.getOverflowWidgetsDomNode() }, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService, accessibilityService, languageConfigurationService, languageFeaturesService);
+		super(domElement, { ...parentEditor.getRawOptions(), overflowWidgetsDomNode: parentEditor.getOverflowWidgetsDomNode() }, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, clipboardService, contextKeyService, themeService, notificationService, accessibilityService, languageConfigurationService, languageFeaturesService);
 
 		this._parentEditor = parentEditor;
 		this._overwriteOptions = options;

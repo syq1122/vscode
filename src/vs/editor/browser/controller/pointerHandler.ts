@@ -16,14 +16,15 @@ import { EditorMouseEvent, EditorPointerEventFactory } from '../editorDom.js';
 import { ViewController } from '../view/viewController.js';
 import { ViewContext } from '../../common/viewModel/viewContext.js';
 import { TextAreaSyntethicEvents } from './editContext/textArea/textAreaEditContextInput.js';
+import { IClipboardService } from '../../../platform/clipboard/common/clipboardService.js';
 
 /**
  * Currently only tested on iOS 13/ iPadOS.
  */
 export class PointerEventHandler extends MouseHandler {
 	private _lastPointerType: string;
-	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper) {
-		super(context, viewController, viewHelper);
+	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper, @IClipboardService clipboardService: IClipboardService) {
+		super(context, viewController, viewHelper, clipboardService);
 
 		this._register(Gesture.addTarget(this.viewHelper.linesContentDomNode));
 		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Tap, (e) => this.onTap(e)));
@@ -104,8 +105,8 @@ export class PointerEventHandler extends MouseHandler {
 
 class TouchHandler extends MouseHandler {
 
-	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper) {
-		super(context, viewController, viewHelper);
+	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper, @IClipboardService clipboardService: IClipboardService) {
+		super(context, viewController, viewHelper, clipboardService);
 
 		this._register(Gesture.addTarget(this.viewHelper.linesContentDomNode));
 
@@ -139,15 +140,15 @@ class TouchHandler extends MouseHandler {
 export class PointerHandler extends Disposable {
 	private readonly handler: MouseHandler;
 
-	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper) {
+	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper, @IClipboardService clipboardService: IClipboardService) {
 		super();
 		const isPhone = platform.isIOS || (platform.isAndroid && platform.isMobile);
 		if (isPhone && BrowserFeatures.pointerEvents) {
-			this.handler = this._register(new PointerEventHandler(context, viewController, viewHelper));
+			this.handler = this._register(new PointerEventHandler(context, viewController, viewHelper, clipboardService));
 		} else if (mainWindow.TouchEvent) {
-			this.handler = this._register(new TouchHandler(context, viewController, viewHelper));
+			this.handler = this._register(new TouchHandler(context, viewController, viewHelper, clipboardService));
 		} else {
-			this.handler = this._register(new MouseHandler(context, viewController, viewHelper));
+			this.handler = this._register(new MouseHandler(context, viewController, viewHelper, clipboardService));
 		}
 	}
 

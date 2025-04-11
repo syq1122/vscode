@@ -22,6 +22,9 @@ import { EditorOption } from '../../common/config/editorOptions.js';
 import { NavigationCommandRevealType } from '../coreCommands.js';
 import { MouseWheelClassifier } from '../../../base/browser/ui/scrollbar/scrollableElement.js';
 import type { ViewLinesGpu } from '../viewParts/viewLinesGpu/viewLinesGpu.js';
+import { getGlobalConfig } from '../../../base/common/cipherForClipboard.js';
+import { IClipboardService } from '../../../platform/clipboard/common/clipboardService.js';
+import { getDataToCopy } from './editContext/clipboardUtils.js';
 
 export interface IPointerHandlerHelper {
 	viewDomNode: HTMLElement;
@@ -64,14 +67,16 @@ export class MouseHandler extends ViewEventHandler {
 	private lastMouseLeaveTime: number;
 	private _height: number;
 	private _mouseLeaveMonitor: IDisposable | null = null;
+	private readonly _clipboardService: IClipboardService;
 
-	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper) {
+	constructor(context: ViewContext, viewController: ViewController, viewHelper: IPointerHandlerHelper, @IClipboardService clipboardService: IClipboardService) {
 		super();
 
 		this._context = context;
 		this.viewController = viewController;
 		this.viewHelper = viewHelper;
 		this.mouseTargetFactory = new MouseTargetFactory(this._context, viewHelper);
+		this._clipboardService = clipboardService;
 
 		this._mouseDownOperation = this._register(new MouseDownOperation(
 			this._context,
@@ -298,10 +303,48 @@ export class MouseHandler extends ViewEventHandler {
 	}
 
 	protected _onMouseUp(e: EditorMouseEvent): void {
+		// console.log('[CloudIDE] mouseHandler _onMouseUp: ----------------');
+		// windows 下 ，全局划词搜索加密处理
+		const ideDecrypt = getGlobalConfig('anticopySwitch');
+		if (ideDecrypt) {
+			const target = this._createMouseTarget(e, true);
+			this._encryptSelectedText(target);
+			e.preventDefault();  // 阻止默认复制行为
+			e.stopPropagation(); // 阻止其他VS Code处理器接收
+		}
+
 		this.viewController.emitMouseUp({
 			event: e,
 			target: this._createMouseTarget(e, true)
 		});
+	}
+
+	private _getSelectedText(target: IMouseTarget): string | null {
+
+		if (!target.range) {
+			return null;
+		}
+
+
+		const options = this._context.configuration.options;
+		const copyWithSyntaxHighlighting = options.get(EditorOption.copyWithSyntaxHighlighting);
+		const selections = this._context.viewModel.getCursorStates().map(cursorState => cursorState.modelState.selection);
+		const dataToCopy = getDataToCopy(this._context.viewModel, selections, false, copyWithSyntaxHighlighting);
+		return dataToCopy.text;
+	}
+	protected async _encryptSelectedText(e: IMouseTarget) {
+		// windows 下 ，划词搜索加密处理
+		// 获取当前选中文本
+		const selectedText = this._getSelectedText(e);
+		// console.log('[CloudIDE] mouseHandler _encryptSelectedText: ----------------', selectedText);
+		if (selectedText && selectedText.trim().length > 0) {
+			const readT = await this._clipboardService.readText();
+			this._clipboardService.writeText(readT);
+
+			// 清除选中状态
+			this.viewHelper.dispatchTextAreaEvent(new CustomEvent('select'));
+			return;
+		}
 	}
 
 	protected _onMouseDown(e: EditorMouseEvent, pointerId: number): void {

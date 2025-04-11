@@ -386,14 +386,12 @@ export class TextAreaInput extends Disposable {
 			console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
 			if (ideDecrypt) {
 				// 解密粘贴的内容
-				(async () => {
-					const originalText = await decrypt(text);
-					e.clipboardData?.setData(Mimes.text, originalText);
-					this._onPaste.fire({
-						text: originalText,
-						metadata: metadata
-					});
-				})();
+				const originalText = decrypt(text);
+				e.clipboardData?.setData(Mimes.text, originalText);
+				this._onPaste.fire({
+					text: originalText,
+					metadata: metadata
+				});
 			} else {
 				this._onPaste.fire({
 					text: text,
@@ -628,19 +626,16 @@ export class TextAreaInput extends Disposable {
 
 		e.preventDefault();
 
-		console.log('[CloudIDE] textAreaEditContextInput _ensureClipboardGetsEditorSelection-----------------');
+		// console.log('[CloudIDE] textAreaEditContextInput _ensureClipboardGetsEditorSelection-----------------');
 		if (e.clipboardData) {
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
+			// console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
 			if (ideDecrypt) {
-				(async (data: DataTransfer) => {
-					const encryptedText = await encrypt(dataToCopy.text);
-					const encryptedHtml = dataToCopy.html ? await encrypt(dataToCopy.html) : null;
-					console.log('[CloudIDE] textAreaEditContextInput encryptedText-----------------', encryptedText);
-					console.log('[CloudIDE] textAreaEditContextInput encryptedHtml-----------------', encryptedHtml);
-					ClipboardEventUtils.setTextData(data, encryptedText, encryptedHtml, storedMetadata);
-				})(e.clipboardData);
-				// ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
+				const encryptedText = encrypt(dataToCopy.text);
+				const encryptedHtml = dataToCopy.html ? encrypt(dataToCopy.html) : null;
+				// console.log('[CloudIDE] textAreaEditContextInput encryptedText-----------------', encryptedText);
+				// console.log('[CloudIDE] textAreaEditContextInput encryptedHtml-----------------', encryptedHtml);
+				ClipboardEventUtils.setTextData(e.clipboardData, encryptedText, encryptedHtml, storedMetadata);
 			} else {
 				ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
 			}

@@ -40,6 +40,7 @@ import { ariaLabelForScreenReaderContent, ISimpleModel, newlinecount, PagedScree
 import { ClipboardDataToCopy, getDataToCopy } from '../clipboardUtils.js';
 import { _debugComposition, ITypeData, TextAreaState } from './textAreaEditContextState.js';
 import { getMapForWordSeparators, WordCharacterClass } from '../../../../common/core/wordCharacterClassifier.js';
+import { decrypt, getGlobalConfig } from '../../../../../base/common/cipherForClipboard.js';
 
 export interface IVisibleRangeProvider {
 	visibleRangeForPosition(position: Position): HorizontalPosition | null;
@@ -316,7 +317,15 @@ export class TextAreaEditContext extends AbstractEditContext {
 				multicursorText = (typeof e.metadata.multicursorText !== 'undefined' ? e.metadata.multicursorText : null);
 				mode = e.metadata.mode;
 			}
-			this._viewController.paste(e.text, pasteOnNewLine, multicursorText, mode);
+			const ideDecrypt = getGlobalConfig('anticopySwitch');
+			// console.log('[CloudIDE] textAreaEditContext ideDecrypt-----------------: ', ideDecrypt);
+			if (ideDecrypt) {
+				const originalText = decrypt(e.text);
+				viewController.paste(originalText, pasteOnNewLine, multicursorText, mode);
+			} else {
+				this._viewController.paste(e.text, pasteOnNewLine, multicursorText, mode);
+			}
+
 		}));
 
 		this._register(this._textAreaInput.onCut(() => {

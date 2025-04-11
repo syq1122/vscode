@@ -174,10 +174,8 @@ export class NativeEditContext extends AbstractEditContext {
 				mode = metadata.mode;
 			}
 			if (ideDecrypt) {
-				(async () => {
-					const originalText = await decrypt(text);
-					viewController.paste(originalText, pasteOnNewLine, multicursorText, mode);
-				})();
+				const originalText = decrypt(text);
+				viewController.paste(originalText, pasteOnNewLine, multicursorText, mode);
 			} else {
 				viewController.paste(text, pasteOnNewLine, multicursorText, mode);
 			}
@@ -513,23 +511,19 @@ export class NativeEditContext extends AbstractEditContext {
 			storedMetadata
 		);
 		e.preventDefault();
-		console.log('[CloudIDE] nativeEditContext _ensureClipboardGetsEditorSelection-----------------');
+		// console.log('[CloudIDE] nativeEditContext _ensureClipboardGetsEditorSelection-----------------');
 		if (e.clipboardData) {
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('[CloudIDE] nativeEditContext ideDecrypt-----------------: ', ideDecrypt);
-			// ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
+			// console.log('[CloudIDE] nativeEditContext ideDecrypt-----------------: ', ideDecrypt);
 
 			if (ideDecrypt) {
-				(async (e: ClipboardEvent) => {
-					const encryptedText = await encrypt(dataToCopy.text);
-					const encryptedHtml = dataToCopy.html ? await encrypt(dataToCopy.html) : null;
-					console.log('[CloudIDE] nativeEditContext encryptedText-----------------', encryptedText);
-					console.log('[CloudIDE] nativeEditContext encryptedHtml-----------------', encryptedHtml);
-					if (e.clipboardData) {
-						ClipboardEventUtils.setTextData(e?.clipboardData, encryptedText, encryptedHtml, storedMetadata);
-					}
-				})(e);
-				// ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
+				const encryptedText = encrypt(dataToCopy.text);
+				const encryptedHtml = dataToCopy.html ? encrypt(dataToCopy.html) : null;
+				// console.log('[CloudIDE] nativeEditContext encryptedText-----------------', encryptedText);
+				// console.log('[CloudIDE] nativeEditContext encryptedHtml-----------------', encryptedHtml);
+				if (e.clipboardData) {
+					ClipboardEventUtils.setTextData(e.clipboardData, encryptedText, encryptedHtml, storedMetadata);
+				}
 			} else {
 				ClipboardEventUtils.setTextData(e.clipboardData, dataToCopy.text, dataToCopy.html, storedMetadata);
 			}

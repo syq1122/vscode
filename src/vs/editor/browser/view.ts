@@ -63,6 +63,7 @@ import { NativeEditContext } from './controller/editContext/native/nativeEditCon
 import { RulersGpu } from './viewParts/rulersGpu/rulersGpu.js';
 import { GpuMarkOverlay } from './viewParts/gpuMark/gpuMark.js';
 import { AccessibilitySupport } from '../../platform/accessibility/common/accessibility.js';
+import { IClipboardService } from '../../platform/clipboard/common/clipboardService.js';
 
 
 export interface IContentWidgetData {
@@ -123,7 +124,8 @@ export class View extends ViewEventHandler {
 		model: IViewModel,
 		userInputEvents: ViewUserInputEvents,
 		overflowWidgetsDomNode: HTMLElement | undefined,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService
+		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		@IClipboardService private readonly _clipboardService: IClipboardService
 	) {
 		super();
 		this._ownerID = ownerID;
@@ -273,7 +275,7 @@ export class View extends ViewEventHandler {
 		this._applyLayout();
 
 		// Pointer handler
-		this._pointerHandler = this._register(new PointerHandler(this._context, this._viewController, this._createPointerHandlerHelper()));
+		this._pointerHandler = this._register(new PointerHandler(this._context, this._viewController, this._createPointerHandlerHelper(), this._clipboardService));
 	}
 
 	private _instantiateEditContext(): AbstractEditContext {

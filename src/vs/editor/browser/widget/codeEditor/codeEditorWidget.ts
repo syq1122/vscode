@@ -61,6 +61,7 @@ import { editorErrorForeground, editorHintForeground, editorInfoForeground, edit
 import { IThemeService, registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 import { MenuId } from '../../../../platform/actions/common/actions.js';
 import { decrypt, getGlobalConfig } from '../../../../base/common/cipherForClipboard.js';
+import { IClipboardService } from '../../../../platform/clipboard/common/clipboardService.js';
 
 export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeEditor {
 
@@ -230,6 +231,7 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 	private readonly _notificationService: INotificationService;
 	protected readonly _codeEditorService: ICodeEditorService;
 	private readonly _commandService: ICommandService;
+	private readonly _clipboardService: IClipboardService;
 	private readonly _themeService: IThemeService;
 
 	private readonly _focusTracker: CodeEditorWidgetFocusTracker;
@@ -257,6 +259,7 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		@IInstantiationService instantiationService: IInstantiationService,
 		@ICodeEditorService codeEditorService: ICodeEditorService,
 		@ICommandService commandService: ICommandService,
+		@IClipboardService clipboardService: IClipboardService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
 		@INotificationService notificationService: INotificationService,
@@ -299,6 +302,7 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		this._notificationService = notificationService;
 		this._codeEditorService = codeEditorService;
 		this._commandService = commandService;
+		this._clipboardService = clipboardService;
 		this._themeService = themeService;
 		this._register(new EditorContextKeysManager(this, this._contextKeyService));
 		this._register(new EditorModeContext(this, this._contextKeyService, languageFeaturesService));
@@ -1169,11 +1173,9 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
 		if (ideDecrypt) {
 			// 解密粘贴的内容
-			(async () => {
-				const originalText = await decrypt(text);
-				console.log('[CloudIDE] codeEditorWidget: _paste:-----------------ideDecrypt:', ideDecrypt);
-				viewModel.paste(originalText, pasteOnNewLine, multicursorText, source);
-			})();
+			const originalText = decrypt(text);
+			console.log('[CloudIDE] codeEditorWidget: _paste:-----------------ideDecrypt:', ideDecrypt);
+			viewModel.paste(originalText, pasteOnNewLine, multicursorText, source);
 		} else {
 			viewModel.paste(text, pasteOnNewLine, multicursorText, source);
 		}
@@ -1894,7 +1896,8 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 			viewModel,
 			viewUserInputEvents,
 			this._overflowWidgetsDomNode,
-			this._instantiationService
+			this._instantiationService,
+			this._clipboardService
 		);
 
 		return [view, true];

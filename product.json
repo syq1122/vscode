@@ -39,8 +39,8 @@
     "quality": "stable",
     "webviewContentExternalBaseUrlTemplate": "{{protocol}}//{{host}}{{pathname}}{{quality}}-{{commit}}/static/out/vs/workbench/contrib/webview/browser/pre/",
     "extensionsGallery": {
-        "serviceUrl": "http://sit.gitee.work/app/cloudide/plugin/_apis/public/gallery",
-        "searchUrl": "http://sit.gitee.work/app/cloudide/plugin/_apis/public/gallery/extensionquery",
+        "serviceUrl": "http://test.testcloudide.com/app/_apis/public/gallery",
+        "searchUrl": "http://test.testcloudide.com/app/_apis/public/gallery/extensionquery",
         "nlsBaseUrl": "https://www.vscode-unpkg.net/_lp/",
         "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
         "itemUrl": "https://marketplace.visualstudio.com/items",
@@ -2194,15 +2194,27 @@
             }
         },
         {
-            "name": "saoudrizwan.claude-dev",
-            "version": "3.8.0",
+            "name": "chadalen.vscode-jetbrains-icon-theme",
+            "version": "2.30.0",
             "metadata": {
                 "publisherId": {
-                    "publisherName": "saoudrizwan",
-                    "displayName": "Cline",
+                    "publisherName": "chadalen",
+                    "displayName": "JetBrains Icon Theme",
                     "flags": "verified"
                 },
-                "publisherDisplayName": "Cline"
+                "publisherDisplayName": "JetBrains Icon Theme"
+            }
+        },
+        {
+            "name": "PKief.material-product-icons",
+            "version": "1.7.1",
+            "metadata": {
+                "publisherId": {
+                    "publisherName": "PKief",
+                    "displayName": "Material Product Icons",
+                    "flags": "verified"
+                },
+                "publisherDisplayName": "Material Product Icons"
             }
         }
     ],
