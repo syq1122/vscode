@@ -537,7 +537,7 @@ export class WebviewElement extends Disposable implements IWebview, WebviewFindD
 	}
 
 	protected webviewContentEndpoint(encodedWebviewOrigin: string): string {
-		console.log('[CloudIDE] webviewElement webviewContentEndpoint:-----------------:', encodedWebviewOrigin);
+		// console.log('[CloudIDE] webviewElement webviewContentEndpoint:-----------------:', encodedWebviewOrigin);
 		const webviewExternalEndpoint = this._environmentService.webviewExternalEndpoint;
 		if (!webviewExternalEndpoint) {
 			throw new Error(`'webviewExternalEndpoint' has not been configured. Webviews will not work!`);

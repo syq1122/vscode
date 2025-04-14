@@ -174,14 +174,14 @@ class RemoteAuthoritiesImpl {
 	}
 
 	setServerRootPath(product: { quality?: string; commit?: string }, serverBasePath: string | undefined): void {
-		console.log("setServerRootPath--------------: " + serverBasePath)
+		// console.log("[CloudIDE] setServerRootPath--------------: " + serverBasePath)
 		let pathname = serverBasePath;
 		if (isWeb) {
 			pathname = window.location.pathname + serverBasePath?.replace(/^\//, '');
 		}
 		this._serverRootPath = paths.posix.join(pathname ?? '/', getServerProductSegment(product));
 		// this._serverRootPath = paths.posix.join(serverBasePath ?? '/', getServerProductSegment(product)).replace(/^\//, '');
-		console.log("setServerRootPath this._serverRootPath--------------: " + this._serverRootPath);
+		// console.log("[CloudIDE] setServerRootPath this._serverRootPath--------------: " + this._serverRootPath);
 	}
 
 	getServerRootPath(): string {
@@ -240,7 +240,7 @@ class RemoteAuthoritiesImpl {
 export const RemoteAuthorities = new RemoteAuthoritiesImpl();
 
 export function getServerProductSegment(product: { quality?: string; commit?: string }) {
-	console.log("getServerProductSegment --------------: ")
+	// console.log("getServerProductSegment --------------: ")
 	return `${product.quality ?? 'oss'}-${product.commit ?? 'dev'}`;
 	// return ``;
 }

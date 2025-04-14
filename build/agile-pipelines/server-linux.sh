@@ -84,8 +84,8 @@ function download_builtin_extensions() {
 	echo "==> Downloading builtin extensions..."
 	$cmd cd $SOURCE
 # TODO 这里跳过下载插件
-#	$cmd rm -rf .build
-#	$cmd npm run download-builtin-extensions
+	$cmd rm -rf .build
+	$cmd npm run download-builtin-extensions
 }
 
 function compile_build_minify() {

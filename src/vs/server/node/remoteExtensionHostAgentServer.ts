@@ -93,8 +93,8 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
 		this._extHostConnections = Object.create(null);
 		this._managementConnections = Object.create(null);
 		this._allReconnectionTokens = new Set<string>();
-		console.log('[CloudIDE] remoteExtensionHostAgentServer _serverBasePath-----------------: ', this._serverBasePath);
-		console.log('[CloudIDE] remoteExtensionHostAgentServer _serverProductPath-----------------: ', this._serverProductPath);
+		// console.log('[CloudIDE] remoteExtensionHostAgentServer _serverBasePath-----------------: ', this._serverBasePath);
+		// console.log('[CloudIDE] remoteExtensionHostAgentServer _serverProductPath-----------------: ', this._serverProductPath);
 		this._webClientServer = (
 			hasWebClient
 				? this._instantiationService.createInstance(WebClientServer, this._connectionToken, serverBasePath ?? '/', this._serverProductPath)
@@ -106,7 +106,7 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
 	}
 
 	public async handleRequest(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
-		console.log('[CloudIDE] remoteExtensionHostAgentServer handleRequest-----------------');
+		// console.log('[CloudIDE] remoteExtensionHostAgentServer handleRequest-----------------');
 		// Only serve GET requests
 		if (req.method !== 'GET') {
 			return serveError(req, res, 405, `Unsupported method ${req.method}`);
@@ -117,7 +117,7 @@ class RemoteExtensionHostAgentServer extends Disposable implements IServerAPI {
 		}
 
 		const parsedUrl = url.parse(req.url, true);
-		console.log('[CloudIDE] remoteExtensionHostAgentServer handleRequest-----------------parsedUrl',parsedUrl);
+		// console.log('[CloudIDE] remoteExtensionHostAgentServer handleRequest-----------------parsedUrl', parsedUrl);
 		let pathname = parsedUrl.pathname;
 
 		if (!pathname) {
