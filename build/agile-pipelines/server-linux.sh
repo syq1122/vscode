@@ -145,6 +145,8 @@ function make_package() {
 	$cmd mkdir ${COMMIT}-${variant}/
 	$cmd cp -r $WORKSPACE/icoding-release/vscode-server-linux-$ARCH-web/. ${COMMIT}-${variant}/.
 	$cmd tar --disable-copyfile -czf ${COMMIT}.${variant}.tar.gz ${COMMIT}-${variant}/
+	# mac
+	#	$cmd gtar -czf ${COMMIT}.${variant}.tar.gz ${COMMIT}-${variant}/
 }
 
 function build_icoding() {

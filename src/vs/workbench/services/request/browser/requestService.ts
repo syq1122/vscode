@@ -39,7 +39,7 @@ export class BrowserRequestService extends AbstractRequestService implements IRe
 				options.proxyAuthorization = this.configurationService.inspect<string>('http.proxyAuthorization').userLocalValue;
 			}
 			const context = await this.logAndRequest(options, () => request(options, token, () => navigator.onLine));
-			console.log('[CloudIDE] requestService request-----------------');
+			// console.log('[CloudIDE] requestService request-----------------');
 			const connection = this.remoteAgentService.getConnection();
 			if (connection && context.res.statusCode === 405) {
 				return this._makeRemoteRequest(connection, options, token);
