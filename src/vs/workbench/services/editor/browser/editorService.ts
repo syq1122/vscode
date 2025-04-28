@@ -35,8 +35,8 @@ import { IHostService } from '../../host/browser/host.js';
 import { findGroup } from '../common/editorGroupFinder.js';
 import { ITextEditorService } from '../../textfile/common/textEditorService.js';
 import { SyncDescriptor } from '../../../../platform/instantiation/common/descriptors.js';
-// import { requestLog } from '../../../../base/common/sendLog.js';
-// let canSendRequest: Boolean = true;
+import { requestLog } from '../../../../base/common/sendLog.js';
+let canSendRequest: Boolean = true;
 
 export class EditorService extends Disposable implements EditorServiceImpl {
 
@@ -247,24 +247,24 @@ export class EditorService extends Disposable implements EditorServiceImpl {
 			this.handleDeletedFile(e.resource, false, e.target ? e.target.resource : undefined);
 		}
 		// 删除移动文件，会执行多次
-		// if (e.isOperation(FileOperation.DELETE)) {
-		// 	if (canSendRequest) {
-		// 		canSendRequest = false;
-		// 		requestLog({ name: 'vscode.delete.file', content: e.resource.path });
-		// 		setTimeout(() => {
-		// 			canSendRequest = true;
-		// 		}, 2000);
-		// 	}
-		// }
-		// if (e.isOperation(FileOperation.MOVE)) {
-		// 	if (canSendRequest) {
-		// 		canSendRequest = false;
-		// 		requestLog({ name: 'vscode.move.file', content: e.resource.path });
-		// 		setTimeout(() => {
-		// 			canSendRequest = true;
-		// 		}, 2000);
-		// 	}
-		// }
+		if (e.isOperation(FileOperation.DELETE)) {
+			if (canSendRequest) {
+				canSendRequest = false;
+				requestLog({ name: 'vscode.delete.file', content: e.resource.path });
+				setTimeout(() => {
+					canSendRequest = true;
+				}, 2000);
+			}
+		}
+		if (e.isOperation(FileOperation.MOVE)) {
+			if (canSendRequest) {
+				canSendRequest = false;
+				requestLog({ name: 'vscode.move.file', content: e.resource.path });
+				setTimeout(() => {
+					canSendRequest = true;
+				}, 2000);
+			}
+		}
 	}
 
 	private onDidFilesChange(e: FileChangesEvent): void {
@@ -598,7 +598,7 @@ export class EditorService extends Disposable implements EditorServiceImpl {
 				options = { ...options, activation };
 			}
 		}
-		// requestLog({ name: 'vscode.open.file', content: typedEditor?.resource?.path });
+		requestLog({ name: 'vscode.open.file', content: typedEditor?.resource?.path });
 
 		return group.openEditor(typedEditor, options);
 	}
