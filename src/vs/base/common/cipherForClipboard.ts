@@ -12,7 +12,7 @@ export const commonPrefix = 'CloudIDECopy';
 export function encrypt(content: string): string {
 	// 加密
 	const encrypted = SyncAES.encrypt(content, secretKey, iv);
-	console.log('[CloudIDE] Encrypted:-----------------:', encrypted);
+	// console.log('[CloudIDE] Encrypted:-----------------:', encrypted);
 	return `${encrypted}:${commonPrefix}`;
 }
 
@@ -23,13 +23,14 @@ export function decrypt(encryptedContent: string): string {
 	}
 	const parts = encryptedContent.split(':');
 	if (parts.length !== 2 || !parts[1].endsWith(commonPrefix)) {
-		throw new Error('Invalid encrypted content format');
+		console.log('[CloudIDE] Invalid encrypted content format');
+		return encryptedContent;
 	}
 
 	const encryptedText = parts[0];
 	// 解密
 	const decrypted = SyncAES.decrypt(encryptedText, secretKey, iv);
-	console.log('[CloudIDE] Decrypted:-----------------:', decrypted);
+	// console.log('[CloudIDE] Decrypted:-----------------:', decrypted);
 
 	return decrypted;
 }

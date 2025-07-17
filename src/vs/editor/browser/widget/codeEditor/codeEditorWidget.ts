@@ -1166,7 +1166,7 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		if (!this._modelData) {
 			return;
 		}
-		console.log('[CloudIDE] ideDecrypt-_paste', text);
+		// console.log('[CloudIDE] ideDecrypt-_paste', text);
 		const viewModel = this._modelData.viewModel;
 		const startPosition = viewModel.getSelection().getStartPosition();
 
@@ -1174,7 +1174,7 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 		if (ideDecrypt) {
 			// 解密粘贴的内容
 			const originalText = decrypt(text);
-			console.log('[CloudIDE] codeEditorWidget: _paste:-----------------ideDecrypt:', ideDecrypt);
+			// console.log('[CloudIDE] codeEditorWidget: _paste:-----------------ideDecrypt:', ideDecrypt);
 			viewModel.paste(originalText, pasteOnNewLine, multicursorText, source);
 		} else {
 			viewModel.paste(text, pasteOnNewLine, multicursorText, source);

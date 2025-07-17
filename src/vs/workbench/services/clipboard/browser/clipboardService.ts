@@ -36,7 +36,7 @@ export class BrowserClipboardService extends BaseBrowserClipboardService {
 		}
 		if (ideDecrypt) {
 			const encrypted = encrypt(text);
-			console.log('[CloudIDE] writeText:-----------------:', encrypted);
+			// console.log('[CloudIDE] writeText:-----------------:', encrypted);
 			return super.writeText(encrypted, type);
 		}
 		return super.writeText(text, type);

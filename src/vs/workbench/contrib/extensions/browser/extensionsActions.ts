@@ -206,7 +206,7 @@ export class PromptExtensionInstallFailureAction extends Action {
 	}
 
 	private async getDownloadUrl(): Promise<URI | undefined> {
-		console.log('[CloudIDE] getDownloadUrl--------------------------');
+		// console.log('[CloudIDE] getDownloadUrl--------------------------');
 		if (isIOS) {
 			return undefined;
 		}

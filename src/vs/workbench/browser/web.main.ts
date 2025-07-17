@@ -171,7 +171,7 @@ export class BrowserMain extends Disposable {
 			}
 
 			let logger: DelayedLogChannel | undefined = undefined;
-			console.log('[CloudIDE] invokeFunction');
+			// console.log('[CloudIDE] invokeFunction');
 			// 请求用户信息
 			this.getUserInfo(secretStorage);
 			return {
@@ -261,10 +261,10 @@ export class BrowserMain extends Disposable {
 		const token = await secretStorage.get(JSON.stringify({ extensionId: 'cloud.cloud-ide-remote', key: 'utoken' }));
 		return token;
 	}
-	// private getRouterRouteIds() {
-	// 	const [, , , CompanyId, ProjectId] = window.location.pathname.match(/^\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\//) || [];
-	// 	return [CompanyId, ProjectId];
-	// }
+	private getRouterRouteIds() {
+		const [, , , CompanyId, ProjectId] = window.location.pathname.match(/^\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\//) || [];
+		return [CompanyId, ProjectId];
+	}
 	private async getUserInfo(secretStorage: ISecretStorageService) {
 		const host = window.location.origin;
 		const utoken = await this.getUtoken(secretStorage);
@@ -272,9 +272,9 @@ export class BrowserMain extends Disposable {
 			console.error('未能获取有效登录凭证！');
 			return undefined;
 		}
-		console.log('host', host)
-		// const endpoint = `${host}/api/cloudide/${this.getRouterRouteIds()[0]}/${this.getRouterRouteIds()[1]}/cloud/user/info`;
-		const endpoint = `${host}/api/cloud/user/info`;
+		// console.log('host', host)
+		const endpoint = `${host}/api/cloudide/${this.getRouterRouteIds()[0]}/${this.getRouterRouteIds()[1]}/cloud/user/info`;
+		// const endpoint = `${host}/api/cloud/user/info`;
 		try {
 			const response = await fetch(
 				endpoint,
@@ -295,8 +295,32 @@ export class BrowserMain extends Disposable {
 		}
 		catch (error) {
 			console.error('Failed to fetch user info:', error.message);
-			setGlobalConfig('anticopySwitch', false);
-			return undefined;
+
+			// console.log('host', host)
+			const endpoint = `${host}/idenoauth/cloud/user/info`;
+			try {
+				const response = await fetch(
+					endpoint,
+					{
+						method: 'GET',
+						// @ts-ignore
+						headers: { 'X-TOKEN': utoken },
+					});
+				if (!response.ok) {
+					return;
+				}
+				const data = await response.json();
+				if (data.code !== 0) {
+					console.error(data.message ?? 'get user info failed');
+					return;
+				}
+				setGlobalConfig('anticopySwitch', data.result.anticopySwitch === 0 ? true : false);
+			}
+			catch (error) {
+				console.error('idenoauth: Failed to fetch user info:', error.message);
+				setGlobalConfig('anticopySwitch', false);
+				return undefined;
+			}
 		}
 	}
 

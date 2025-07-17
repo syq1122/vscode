@@ -162,7 +162,7 @@ export class NativeEditContext extends AbstractEditContext {
 			}
 			metadata = metadata || InMemoryClipboardMetadataManager.INSTANCE.get(text);
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('[CloudIDE] nativeEditContext ideDecrypt-----------------: ', ideDecrypt);
+			// console.log('[CloudIDE] nativeEditContext ideDecrypt-----------------: ', ideDecrypt);
 			let pasteOnNewLine = false;
 			let multicursorText: string[] | null = null;
 			let mode: string | null = null;

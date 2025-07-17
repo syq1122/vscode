@@ -144,9 +144,9 @@ function make_package() {
 	$cmd rm -rf ${COMMIT}-${variant}/
 	$cmd mkdir ${COMMIT}-${variant}/
 	$cmd cp -r $WORKSPACE/icoding-release/vscode-server-linux-$ARCH-web/. ${COMMIT}-${variant}/.
-	$cmd tar --disable-copyfile -czf ${COMMIT}.${variant}.tar.gz ${COMMIT}-${variant}/
+	# $cmd tar --disable-copyfile -czf ${COMMIT}-${variant}.tar.gz ${COMMIT}-${variant}/
 	# mac
-	#	$cmd gtar -czf ${COMMIT}.${variant}.tar.gz ${COMMIT}-${variant}/
+	$cmd gtar -czf ${COMMIT}-${variant}.tar.gz ${COMMIT}-${variant}/
 }
 
 function build_icoding() {
@@ -176,9 +176,9 @@ function main() {
 	prepare_remote_web_node_modules
 
 	if [[ "$ARCH" == "x64" ]]; then
-		echo -e "\n\n==> Start to build iCoding nopatchelf"
-		build_icoding nopatchelf
-		echo -e "==> nopatchelf DONE \n"
+		echo -e "\n\n==> Start to build iCoding amd64"
+		build_icoding amd64
+		echo -e "==> arm64 DONE \n"
 	else
 		echo -e "\n\n==> Start to build iCoding arm64"
 		build_icoding arm64

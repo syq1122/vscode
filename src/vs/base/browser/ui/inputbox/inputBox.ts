@@ -238,7 +238,7 @@ export class InputBox extends Widget {
 			this.input.addEventListener('cut', e => encryptCopiedText(e, 'cut'));
 			this.input.addEventListener('paste', async (e: ClipboardEvent) => {
 				const cipherText = e.clipboardData?.getData(Mimes.text);
-				console.log('[CloudIDE] cipherText-----------------', cipherText);
+				// console.log('[CloudIDE] cipherText-----------------', cipherText);
 				if (cipherText) {
 					e.preventDefault();
 
@@ -646,7 +646,7 @@ export class InputBox extends Widget {
 			this.value = content.substr(0, start) + text + content.substr(end);
 			// todo: 判断是否加密
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('[CloudIDE] insertAtCursor ideDecrypt-----------------', ideDecrypt);
+			// console.log('[CloudIDE] insertAtCursor ideDecrypt-----------------', ideDecrypt);
 			if (ideDecrypt) {
 				inputElement.setSelectionRange(start + text.length, start + text.length);
 			} else {

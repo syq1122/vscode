@@ -96,7 +96,6 @@ export class SyncAES {
 	}
 
 	private static cbcDecrypt(data: Uint8Array, key: Uint8Array, iv: Uint8Array): Uint8Array {
-		// 注意: 这是一个简化的实现，实际AES算法更复杂
 		const result = new Uint8Array(data.length);
 		let previousBlock = iv;
 
@@ -114,7 +113,6 @@ export class SyncAES {
 	// ========== 辅助方法 ==========
 
 	private static simplifiedAES(data: Uint8Array, key: Uint8Array, isDecrypt = false): Uint8Array {
-		// 警告: 这不是真正的AES实现，仅用于演示
 		const result = new Uint8Array(data.length);
 		for (let i = 0; i < data.length; i++) {
 			result[i] = data[i] ^ key[i % key.length];

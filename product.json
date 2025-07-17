@@ -5,7 +5,7 @@
     "provider": "Gitee-CloudIDE",
     "providerCode": "gitee",
     "brandName": "CloudIDE",
-    "appVersion": "1.98.2.01",
+    "appVersion": "1.98.2.02",
     "win32AppId": "{{695E0886-15F3-449C-9356-5D72B5DF9174}_VSCode",
     "win32x64AppId": "{{695E0886-15F3-449C-9356-5D72B5DF9174}_VSCode",
     "win32arm64AppId": "{{695E0886-15F3-449C-9356-5D72B5DF9174}_VSCode",
@@ -2242,7 +2242,7 @@
             "description": "Supercharge your coding experience for as little as $10/month with cutting edge AI code generation."
         }
     ],
-    "commit": "1.98.2.01",
+    "commit": "1.98.2.02",
     "icodingMeta": {
         "host": "icoding.baidu-int.com",
         "port": 443,

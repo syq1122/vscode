@@ -26,12 +26,12 @@ export class NativeClipboardService implements IClipboardService {
 	}
 
 	async writeText(text: string, type?: 'selection' | 'clipboard'): Promise<void> {
-		console.log('writeText: ', text);
-		console.log('[CloudIDE] NativeClipboardService: writeText:-----------------:', text);
+		// console.log('writeText: ', text);
+		// console.log('[CloudIDE] NativeClipboardService: writeText:-----------------:', text);
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
 		if (ideDecrypt) {
 			const encrypted = encrypt(text);
-			console.log('[CloudIDE] NativeClipboardService: writeClipboardText:-----------------:', encrypted);
+			// console.log('[CloudIDE] NativeClipboardService: writeClipboardText:-----------------:', encrypted);
 			return this.nativeHostService.writeClipboardText(encrypted, type);
 		}
 		return this.nativeHostService.writeClipboardText(text, type);
@@ -39,7 +39,7 @@ export class NativeClipboardService implements IClipboardService {
 
 	async readText(type?: 'selection' | 'clipboard'): Promise<string> {
 		const ideDecrypt = getGlobalConfig('anticopySwitch');
-		console.log('[CloudIDE] NativeClipboardService: readText:-----------------ideDecrypt:', ideDecrypt);
+		// console.log('[CloudIDE] NativeClipboardService: readText:-----------------ideDecrypt:', ideDecrypt);
 		if (ideDecrypt) {
 			const cipherText = await this.nativeHostService.readClipboardText(type);
 			return decrypt(cipherText);

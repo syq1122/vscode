@@ -383,7 +383,7 @@ export class TextAreaInput extends Disposable {
 			// try the in-memory store
 			metadata = metadata || InMemoryClipboardMetadataManager.INSTANCE.get(text);
 			const ideDecrypt = getGlobalConfig('anticopySwitch');
-			console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
+			// console.log('[CloudIDE] textAreaEditContextInput ideDecrypt-----------------: ', ideDecrypt);
 			if (ideDecrypt) {
 				// 解密粘贴的内容
 				const originalText = decrypt(text);
