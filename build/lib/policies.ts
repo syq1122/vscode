@@ -659,7 +659,7 @@ function compareVersions(a: Version, b: Version): number {
 }
 
 async function queryVersions(serviceUrl: string, languageId: string): Promise<Version[]> {
-	console.log('[CloudIDE] policies queryVersions----------------- and languageId: ', serviceUrl, languageId);
+	// console.log('[CloudIDE] policies queryVersions----------------- and languageId: ', serviceUrl, languageId);
 	const res = await fetch(`${serviceUrl}/extensionquery`, {
 		method: 'POST',
 		headers: {
