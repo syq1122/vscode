@@ -97,6 +97,7 @@ import { mainWindow } from '../../base/browser/window.js';
 import { INotificationService, Severity } from '../../platform/notification/common/notification.js';
 import { setGlobalConfig } from '../../base/common/cipherForClipboard.js';
 import { isWeb } from '../../base/common/platform.js';
+import { getApiPrefix, getIdenoauthApiPrefix } from '../../base/common/sendLog.js';
 
 export class BrowserMain extends Disposable {
 
@@ -261,20 +262,13 @@ export class BrowserMain extends Disposable {
 		const token = await secretStorage.get(JSON.stringify({ extensionId: 'cloud.cloud-ide-remote', key: 'utoken' }));
 		return token;
 	}
-	private getRouterRouteIds() {
-		const [, , , CompanyId, ProjectId] = window.location.pathname.match(/^\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)\//) || [];
-		return [CompanyId, ProjectId];
-	}
 	private async getUserInfo(secretStorage: ISecretStorageService) {
-		const host = window.location.origin;
 		const utoken = await this.getUtoken(secretStorage);
 		if (!utoken) {
 			console.error('未能获取有效登录凭证！');
 			return undefined;
 		}
-		// console.log('host', host)
-		const endpoint = `${host}/api/cloudide/${this.getRouterRouteIds()[0]}/${this.getRouterRouteIds()[1]}/cloud/user/info`;
-		// const endpoint = `${host}/api/cloud/user/info`;
+		const endpoint = `${getApiPrefix()}/cloud/user/info`;
 		try {
 			const response = await fetch(
 				endpoint,
@@ -295,9 +289,7 @@ export class BrowserMain extends Disposable {
 		}
 		catch (error) {
 			console.error('Failed to fetch user info:', error.message);
-
-			// console.log('host', host)
-			const endpoint = `${host}/idenoauth/cloud/user/info`;
+			const endpoint = `${getIdenoauthApiPrefix()}/idenoauth/cloud/user/info`;
 			try {
 				const response = await fetch(
 					endpoint,
