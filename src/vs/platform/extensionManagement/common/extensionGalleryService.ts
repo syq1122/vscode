@@ -807,7 +807,7 @@ abstract class AbstractExtensionGalleryService implements IExtensionGalleryServi
 				}
 			} catch (error) {
 				// Skip if there is an error while getting the latest version
-				this.logService.error(`Error while getting the latest version for the extension ${extensionInfo.id}.`, getErrorMessage(error));
+				this.logService.info(`Error while getting the latest version for the extension ${extensionInfo.id}.`, getErrorMessage(error));
 				toQuery.push(extensionInfo);
 			}
 		}));
