@@ -265,7 +265,7 @@ export class BrowserMain extends Disposable {
 	private async getUserInfo(secretStorage: ISecretStorageService) {
 		const utoken = await this.getUtoken(secretStorage);
 		if (!utoken) {
-			console.error('未能获取有效登录凭证！');
+			// console.error('未能获取有效登录凭证！');
 			return undefined;
 		}
 		const endpoint = `${getApiPrefix()}/cloud/user/info`;
@@ -282,13 +282,13 @@ export class BrowserMain extends Disposable {
 			}
 			const data = await response.json();
 			if (data.code !== 0) {
-				console.error(data.message ?? 'get user info failed');
+				// console.error(data.message ?? 'get user info failed');
 				return;
 			}
 			setGlobalConfig('anticopySwitch', data.result.anticopySwitch === 0 ? true : false);
 		}
 		catch (error) {
-			console.error('Failed to fetch user info:', error.message);
+			// console.error('Failed to fetch user info:', error.message);
 			const endpoint = `${getIdenoauthApiPrefix()}/idenoauth/cloud/user/info`;
 			try {
 				const response = await fetch(
@@ -303,13 +303,13 @@ export class BrowserMain extends Disposable {
 				}
 				const data = await response.json();
 				if (data.code !== 0) {
-					console.error(data.message ?? 'get user info failed');
+					// console.error(data.message ?? 'get user info failed');
 					return;
 				}
 				setGlobalConfig('anticopySwitch', data.result.anticopySwitch === 0 ? true : false);
 			}
 			catch (error) {
-				console.error('idenoauth: Failed to fetch user info:', error.message);
+				// console.error('idenoauth: Failed to fetch user info:', error.message);
 				setGlobalConfig('anticopySwitch', false);
 				return undefined;
 			}

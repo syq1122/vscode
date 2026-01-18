@@ -380,15 +380,15 @@ export class Workbench extends Layout {
 	private async getUsername(secretStorage: ISecretStorageService) {
 		const host = await this.getApiHost(secretStorage);
 		if (!host) {
-			console.error('用户信息请求地址获取失败！');
+			// console.error('用户信息请求地址获取失败！');
 			return undefined;
 		}
 		const utoken = await this.getUtoken(secretStorage);
 		if (!utoken) {
-			console.error('未能获取有效登录凭证！');
+			// console.error('未能获取有效登录凭证！');
 			return undefined;
 		}
-		console.log('host', host, utoken)
+		// console.log('host', host, utoken)
 		const endpoint = `${host}/api/cloud/user/info`;
 		try {
 			const response = await fetch(
@@ -403,13 +403,13 @@ export class Workbench extends Layout {
 			}
 			const data = await response.json();
 			if (data.code !== 0) {
-				console.error(data.message ?? 'get user info failed');
+				// console.error(data.message ?? 'get user info failed');
 				return;
 			}
 			return data.result.name;
 		}
 		catch (error) {
-			console.error('Failed to fetch user info:', error.message);
+			// console.error('Failed to fetch user info:', error.message);
 			return undefined;
 		}
 	}
